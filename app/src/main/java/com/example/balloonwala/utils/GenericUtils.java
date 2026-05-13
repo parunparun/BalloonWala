@@ -22,7 +22,7 @@ public class GenericUtils {
     }
 
     public static boolean checkButton(View buttonEmpty) {
-        return (buttonEmpty instanceof Button) && ((Button) buttonEmpty).getVisibility() == 0 && StringUtils.isBlank(((Button) buttonEmpty).getText());
+        return (buttonEmpty instanceof Button) && (buttonEmpty).getVisibility() == View.VISIBLE && StringUtils.isBlank(((Button) buttonEmpty).getText());
     }
 
     private static int getRandomInteger(int maximum, int minimum) {
@@ -42,14 +42,14 @@ public class GenericUtils {
         boolean solved = true;
         String startValue = "0";
         for (Button button : buttonList) {
-            int startValueInt = Integer.valueOf(startValue).intValue() + 1;
+            int startValueInt = Integer.parseInt(startValue) + 1;
             if (startValueInt == limit) {
                 startValue = "";
             } else {
                 startValue = String.valueOf(startValueInt);
             }
             if (!button.getText().toString().equalsIgnoreCase(startValue)) {
-                System.out.println("cool cool id: " + button.toString() + " value: " + ((Object) button.getText()) + " startValue: " + startValue);
+                System.out.println("cool cool id: " + button + " value: " + (button.getText()) + " startValue: " + startValue);
                 solved = false;
             }
             if (!solved) {
@@ -71,7 +71,7 @@ public class GenericUtils {
         int limit = maximum - 1;
         while (numbersGenerated.size() != limit) {
             int number = getRandomInteger(maximum, minimum);
-            if (!numbersGenerated.contains(Integer.valueOf(number))) {
+            if (!numbersGenerated.contains(number)) {
                 switch (index) {
                     case 1:
                         setData(number, buttonList.get(0), limit);
@@ -123,7 +123,7 @@ public class GenericUtils {
                         break;
                 }
                 index++;
-                numbersGenerated.add(Integer.valueOf(number));
+                numbersGenerated.add(number);
             }
         }
     }

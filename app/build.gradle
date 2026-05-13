@@ -30,12 +30,12 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
-    lintOptions {
-        abortOnError false
-    }
 
     buildFeatures {
         buildConfig = false
+    }
+    lint {
+        abortOnError false
     }
 }
 

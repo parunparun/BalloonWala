@@ -128,7 +128,7 @@ public class PuzzleActivity extends AppCompatActivity {
         if (this.columns == 16) {
             this.buttonList.add(button1_4);
         } else {
-            button1_4.setVisibility(4);
+            button1_4.setVisibility(View.INVISIBLE);
         }
         Button button2_1 = (Button) findViewById(R.id.buttonCoordinates2_1);
         this.buttonList.add(button2_1);
@@ -140,7 +140,7 @@ public class PuzzleActivity extends AppCompatActivity {
         if (this.columns == 16) {
             this.buttonList.add(button2_4);
         } else {
-            button2_4.setVisibility(4);
+            button2_4.setVisibility(View.INVISIBLE);
         }
         Button button3_1 = (Button) findViewById(R.id.buttonCoordinates3_1);
         this.buttonList.add(button3_1);
@@ -152,31 +152,31 @@ public class PuzzleActivity extends AppCompatActivity {
         if (this.columns == 16) {
             this.buttonList.add(button3_4);
         } else {
-            button3_4.setVisibility(4);
+            button3_4.setVisibility(View.INVISIBLE);
         }
         Button button4_1 = (Button) findViewById(R.id.buttonCoordinates4_1);
         if (this.columns == 16) {
             this.buttonList.add(button4_1);
         } else {
-            button4_1.setVisibility(4);
+            button4_1.setVisibility(View.INVISIBLE);
         }
         Button button4_2 = (Button) findViewById(R.id.buttonCoordinates4_2);
         if (this.columns == 16) {
             this.buttonList.add(button4_2);
         } else {
-            button4_2.setVisibility(4);
+            button4_2.setVisibility(View.INVISIBLE);
         }
         Button button4_3 = (Button) findViewById(R.id.buttonCoordinates4_3);
         if (this.columns == 16) {
             this.buttonList.add(button4_3);
         } else {
-            button4_3.setVisibility(4);
+            button4_3.setVisibility(View.INVISIBLE);
         }
         Button button4_4 = (Button) findViewById(R.id.buttonCoordinates4_4);
         if (this.columns == 16) {
             this.buttonList.add(button4_4);
         } else {
-            button4_4.setVisibility(4);
+            button4_4.setVisibility(View.INVISIBLE);
         }
     }
 

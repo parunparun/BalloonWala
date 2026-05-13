@@ -14,18 +14,18 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
     }
 
     public void renderEightPuzzle(View view) {
-        Intent intent = new Intent(this, (Class<?>) PuzzleActivity.class);
+        Intent intent = new Intent(this, PuzzleActivity.class);
         intent.putExtra(COLUMNS, 9);
         startActivity(intent);
     }
 
     public void renderFifteenPuzzle(View view) {
-        Intent intent = new Intent(this, (Class<?>) PuzzleActivity.class);
+        Intent intent = new Intent(this, PuzzleActivity.class);
         intent.putExtra(COLUMNS, 16);
         startActivity(intent);
     }
