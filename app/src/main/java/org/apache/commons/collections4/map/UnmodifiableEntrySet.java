@@ -1,0 +1,125 @@
+package org.apache.commons.collections4.map;
+
+import java.lang.reflect.Array;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Predicate;
+import org.apache.commons.collections4.Unmodifiable;
+import org.apache.commons.collections4.iterators.AbstractIteratorDecorator;
+import org.apache.commons.collections4.keyvalue.AbstractMapEntryDecorator;
+import org.apache.commons.collections4.set.AbstractSetDecorator;
+
+/* JADX INFO: loaded from: classes.dex */
+public final class UnmodifiableEntrySet<K, V> extends AbstractSetDecorator<Map.Entry<K, V>> implements Unmodifiable {
+    private static final long serialVersionUID = 1678353579659253473L;
+
+    public static <K, V> Set<Map.Entry<K, V>> unmodifiableEntrySet(Set<Map.Entry<K, V>> set) {
+        if (set instanceof Unmodifiable) {
+            return set;
+        }
+        return new UnmodifiableEntrySet(set);
+    }
+
+    private UnmodifiableEntrySet(Set<Map.Entry<K, V>> set) {
+        super(set);
+    }
+
+    @Override // org.apache.commons.collections4.collection.AbstractCollectionDecorator, java.util.Collection, org.apache.commons.collections4.Bag
+    public boolean add(Map.Entry<K, V> object) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override // org.apache.commons.collections4.collection.AbstractCollectionDecorator, java.util.Collection
+    public boolean addAll(Collection<? extends Map.Entry<K, V>> coll) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override // org.apache.commons.collections4.collection.AbstractCollectionDecorator, java.util.Collection
+    public void clear() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override // org.apache.commons.collections4.collection.AbstractCollectionDecorator, java.util.Collection, org.apache.commons.collections4.Bag
+    public boolean remove(Object object) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override // org.apache.commons.collections4.collection.AbstractCollectionDecorator, java.util.Collection
+    public boolean removeIf(Predicate<? super Map.Entry<K, V>> filter) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override // org.apache.commons.collections4.collection.AbstractCollectionDecorator, java.util.Collection, org.apache.commons.collections4.Bag
+    public boolean removeAll(Collection<?> coll) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override // org.apache.commons.collections4.collection.AbstractCollectionDecorator, java.util.Collection, org.apache.commons.collections4.Bag
+    public boolean retainAll(Collection<?> coll) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override // org.apache.commons.collections4.collection.AbstractCollectionDecorator, java.util.Collection, java.lang.Iterable, org.apache.commons.collections4.Bag
+    public Iterator<Map.Entry<K, V>> iterator() {
+        return new UnmodifiableEntrySetIterator(decorated().iterator());
+    }
+
+    @Override // org.apache.commons.collections4.collection.AbstractCollectionDecorator, java.util.Collection
+    public Object[] toArray() {
+        Object[] array = decorated().toArray();
+        for (int i = 0; i < array.length; i++) {
+            array[i] = new UnmodifiableEntry((Map.Entry) array[i]);
+        }
+        return array;
+    }
+
+    /* JADX WARN: Multi-variable type inference failed */
+    @Override // org.apache.commons.collections4.collection.AbstractCollectionDecorator, java.util.Collection
+    public <T> T[] toArray(T[] tArr) {
+        Object[] objArr = tArr;
+        if (tArr.length > 0) {
+            objArr = (Object[]) Array.newInstance(tArr.getClass().getComponentType(), 0);
+        }
+        Object[] array = decorated().toArray(objArr);
+        for (int i = 0; i < array.length; i++) {
+            array[i] = new UnmodifiableEntry((Map.Entry) array[i]);
+        }
+        if (array.length > tArr.length) {
+            return (T[]) array;
+        }
+        System.arraycopy(array, 0, tArr, 0, array.length);
+        if (tArr.length > array.length) {
+            tArr[array.length] = null;
+        }
+        return tArr;
+    }
+
+    private class UnmodifiableEntrySetIterator extends AbstractIteratorDecorator<Map.Entry<K, V>> {
+        protected UnmodifiableEntrySetIterator(Iterator<Map.Entry<K, V>> iterator) {
+            super(iterator);
+        }
+
+        @Override // org.apache.commons.collections4.iterators.AbstractIteratorDecorator, java.util.Iterator
+        public Map.Entry<K, V> next() {
+            return new UnmodifiableEntry(getIterator().next());
+        }
+
+        @Override // org.apache.commons.collections4.iterators.AbstractUntypedIteratorDecorator, java.util.Iterator
+        public void remove() {
+            throw new UnsupportedOperationException();
+        }
+    }
+
+    private class UnmodifiableEntry extends AbstractMapEntryDecorator<K, V> {
+        protected UnmodifiableEntry(Map.Entry<K, V> entry) {
+            super(entry);
+        }
+
+        @Override // org.apache.commons.collections4.keyvalue.AbstractMapEntryDecorator, java.util.Map.Entry
+        public V setValue(V obj) {
+            throw new UnsupportedOperationException();
+        }
+    }
+}
