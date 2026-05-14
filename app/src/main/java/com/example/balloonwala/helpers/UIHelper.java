@@ -1,0 +1,95 @@
+package com.example.balloonwala.helpers;
+
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.widget.Button;
+import android.widget.TextView;
+import com.example.balloonwala.R;
+
+/**
+ * Manages all UI updates for the puzzle screen.
+ *
+ * Responsibilities:
+ * - Update the live move counter display
+ * - Show / clear the solved message
+ * - Enable / disable the undo button
+ * - Show the confirmation dialog (Play Again / Back)
+ *
+ * PuzzleActivity holds an instance and delegates
+ * all UI changes here — keeping the activity clean.
+ */
+public class UIHelper {
+    private final Context context;
+    private final TextView movesCountTextView;
+    private final TextView outputTextView;
+    private final Button   undoButton;
+
+    public UIHelper(
+            Context  context,
+            TextView movesCountTextView,
+            TextView outputTextView,
+            Button   undoButton) {
+
+        this.context             = context;
+        this.movesCountTextView  = movesCountTextView;
+        this.outputTextView      = outputTextView;
+        this.undoButton          = undoButton;
+    }
+
+    // ── Move Counter ──────────────────────────────────────
+
+    /** Updates the live move counter shown above the puzzle grid. */
+    public void updateMovesDisplay(int count) {
+        movesCountTextView.setText(String.valueOf(count));
+    }
+
+    // ── Solved Message ────────────────────────────────────
+
+    /** Shows the win message when the puzzle is solved. */
+    public void showSolvedMessage(String message) {
+        outputTextView.setText(message);
+    }
+
+    /** Clears the solved message e.g. on Play Again. */
+    public void clearSolvedMessage() {
+        outputTextView.setText("");
+    }
+
+    // ── Undo Button ───────────────────────────────────────
+
+    /** Enables or disables the Undo button. */
+    public void setUndoEnabled(boolean enabled) {
+        undoButton.setEnabled(enabled);
+    }
+
+    // ── Confirm Dialog ────────────────────────────────────
+
+    /**
+     * Shows a confirmation dialog with Yes / No buttons.
+     * Runs onConfirm if the user taps Yes.
+     *
+     * Used for both Play Again and Back to Main Menu.
+     */
+    public void showConfirmDialog(String title, int messageResId, Runnable onConfirm) {
+        final AlertDialog alertDialog = new AlertDialog.Builder(context)
+                .setTitle(title)
+                .setMessage(messageResId)
+                .setIcon(R.mipmap.balloon_wala_alert)
+                .setPositiveButton(android.R.string.yes,
+                        (dialog, which) -> onConfirm.run())
+                .setNegativeButton(android.R.string.no, null)
+                .create();
+
+        alertDialog.setOnShowListener(d -> {
+            alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE)
+                    .setTextColor(context.getResources()
+                            .getColor(android.R.color.holo_red_light));
+            alertDialog.getButton(DialogInterface.BUTTON_POSITIVE)
+                    .setTextColor(context.getResources()
+                            .getColor(android.R.color.holo_green_light));
+        });
+
+        alertDialog.show();
+    }
+}

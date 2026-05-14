@@ -18,6 +18,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <!-- Play Again Button -->
         <Button
             android:enabled="true"
             android:id="@+id/playAgain"
@@ -31,6 +33,8 @@
             app:layout_constraintEnd_toStartOf="@+id/back"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
+
+        <!-- Back Button -->
         <Button
             android:enabled="true"
             android:id="@+id/back"
@@ -43,6 +47,66 @@
             android:layout_marginStart="75dp"
             app:layout_constraintStart_toEndOf="@+id/playAgain"
             app:layout_constraintTop_toTopOf="parent"/>
+
+        <!-- ─────────────────────────────────────────── -->
+        <!-- MOVE COUNTER                                -->
+        <!-- ─────────────────────────────────────────── -->
+        <TextView
+            android:id="@+id/movesLabelTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginStart="75dp"
+            android:text="MOVES"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:textColor="@color/colorPrimary"
+            android:letterSpacing="0.1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/playAgain"/>
+
+        <TextView
+            android:id="@+id/movesCountTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="75dp"
+            android:text="0"
+            android:textSize="32sp"
+            android:textStyle="bold"
+            android:textColor="@color/colorAccent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/movesLabelTextView"/>
+
+        <!-- ─────────────────────────────────────────── -->
+        <!-- TIMER                                       -->
+        <!-- ─────────────────────────────────────────── -->
+        <TextView
+            android:id="@+id/timerLabelTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="TIME"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:textColor="@color/colorPrimary"
+            android:letterSpacing="0.1"
+            app:layout_constraintEnd_toEndOf="@+id/back"
+            app:layout_constraintTop_toBottomOf="@+id/back"/>
+
+        <Chronometer
+            android:id="@+id/timerChronometer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="32sp"
+            android:textStyle="bold"
+            android:textColor="@color/colorAccent"
+            android:format="%s"
+            app:layout_constraintEnd_toEndOf="@+id/back"
+            app:layout_constraintTop_toBottomOf="@+id/timerLabelTextView"/>
+
+        <!-- ─────────────────────────────────────────── -->
+        <!-- PUZZLE GRID                                 -->
+        <!-- ─────────────────────────────────────────── -->
         <Button
             android:id="@+id/buttonCoordinates1_1"
             android:background="@drawable/some_btn"
@@ -204,6 +268,10 @@
             android:onClick="swap"
             app:layout_constraintStart_toEndOf="@+id/buttonCoordinates4_3"
             app:layout_constraintTop_toBottomOf="@+id/buttonCoordinates3_4"/>
+
+        <!-- ─────────────────────────────────────────── -->
+        <!-- SOLVED MESSAGE                              -->
+        <!-- ─────────────────────────────────────────── -->
         <TextView
             android:textAppearance="@style/TextAppearance.AppCompat"
             android:textSize="30sp"
@@ -218,6 +286,8 @@
             android:layout_marginStart="75dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/buttonCoordinates4_1"/>
+
+        <!-- Undo Button -->
         <Button
             android:enabled="false"
             android:id="@+id/undo"

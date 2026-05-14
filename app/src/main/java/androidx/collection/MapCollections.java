@@ -112,7 +112,7 @@ abstract class MapCollections<K, V> {
         @Override // java.util.Map.Entry
         public K getKey() {
             if (!this.mEntryValid) {
-                throw new IllegalStateException("This container does not support retaining Map.Entry objects");
+                throw new IllegalStateException("This container does not support retaining Map.Entry model");
             }
             return (K) MapCollections.this.colGetEntry(this.mIndex, 0);
         }
@@ -120,7 +120,7 @@ abstract class MapCollections<K, V> {
         @Override // java.util.Map.Entry
         public V getValue() {
             if (!this.mEntryValid) {
-                throw new IllegalStateException("This container does not support retaining Map.Entry objects");
+                throw new IllegalStateException("This container does not support retaining Map.Entry model");
             }
             return (V) MapCollections.this.colGetEntry(this.mIndex, 1);
         }
@@ -128,7 +128,7 @@ abstract class MapCollections<K, V> {
         @Override // java.util.Map.Entry
         public V setValue(V v) {
             if (!this.mEntryValid) {
-                throw new IllegalStateException("This container does not support retaining Map.Entry objects");
+                throw new IllegalStateException("This container does not support retaining Map.Entry model");
             }
             return (V) MapCollections.this.colSetValue(this.mIndex, v);
         }
@@ -136,7 +136,7 @@ abstract class MapCollections<K, V> {
         @Override // java.util.Map.Entry
         public boolean equals(Object o) {
             if (!this.mEntryValid) {
-                throw new IllegalStateException("This container does not support retaining Map.Entry objects");
+                throw new IllegalStateException("This container does not support retaining Map.Entry model");
             }
             if (!(o instanceof Map.Entry)) {
                 return false;
@@ -148,7 +148,7 @@ abstract class MapCollections<K, V> {
         @Override // java.util.Map.Entry
         public int hashCode() {
             if (!this.mEntryValid) {
-                throw new IllegalStateException("This container does not support retaining Map.Entry objects");
+                throw new IllegalStateException("This container does not support retaining Map.Entry model");
             }
             Object key = MapCollections.this.colGetEntry(this.mIndex, 0);
             Object value = MapCollections.this.colGetEntry(this.mIndex, 1);
