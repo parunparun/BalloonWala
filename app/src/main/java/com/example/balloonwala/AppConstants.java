@@ -20,8 +20,6 @@ public final class AppConstants {
     /** Shared preferences file name used across the app */
     public static final String PREFS_NAME  = "BalloonWalaPrefs";
 
-    public static final String COLUMNS = "com.example.balloonwala.MESSAGE";
-
     // Private constructor to prevent instantiation
     private AppConstants() {
         throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");

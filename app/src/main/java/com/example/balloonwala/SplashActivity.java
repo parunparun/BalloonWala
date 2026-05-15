@@ -20,6 +20,8 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
+
+        // Local variable — only needed here in onCreate
         ImageView balloon = findViewById(R.id.imageView);
         Animation animation = AnimationUtils.loadAnimation(this, R.anim.fromtop);
         balloon.setAnimation(animation);

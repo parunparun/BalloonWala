@@ -18,13 +18,13 @@ public class MainActivity extends AppCompatActivity {
 
     public void renderEightPuzzle(View view) {
         Intent intent = new Intent(this, PuzzleActivity.class);
-        intent.putExtra(AppConstants.COLUMNS, AppConstants.EIGHT_PUZZLE);
+        intent.putExtra(NavigationConstants.COLUMNS, AppConstants.EIGHT_PUZZLE);
         startActivity(intent);
     }
 
     public void renderFifteenPuzzle(View view) {
         Intent intent = new Intent(this, PuzzleActivity.class);
-        intent.putExtra(AppConstants.COLUMNS, AppConstants.FIFTEEN_PUZZLE);
+        intent.putExtra(NavigationConstants.COLUMNS, AppConstants.FIFTEEN_PUZZLE);
         startActivity(intent);
     }
 }

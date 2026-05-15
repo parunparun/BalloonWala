@@ -6,8 +6,7 @@ import android.graphics.drawable.GradientDrawable;
 import android.widget.Button;
 import androidx.core.content.ContextCompat;
 import com.example.balloonwala.R;
-
-import java.util.Objects;
+import java.util.List;
 
 /**
  * Applies fixed colors to each puzzle tile based on its number.
@@ -75,19 +74,20 @@ public class TileStyleHelper {
                 button.getContext(), R.drawable.tile_shape);
 
         if (drawable != null) {
-            GradientDrawable tileDrawable =
-                    (GradientDrawable) Objects.requireNonNull(drawable.getConstantState())
-                            .newDrawable().mutate();
-            tileDrawable.setColor(Color.parseColor(TILE_COLORS[number - 1]));
-            button.setBackground(tileDrawable);
+            // getConstantState() can return null — guard before calling newDrawable()
+            Drawable.ConstantState constantState = drawable.getConstantState();
+            if (constantState != null) {
+                GradientDrawable tileDrawable =
+                        (GradientDrawable) constantState.newDrawable().mutate();
+                tileDrawable.setColor(Color.parseColor(TILE_COLORS[number - 1]));
+                button.setBackground(tileDrawable);
+            }
         }
 
         // Apply text color — dark for light tiles, white for dark tiles
-        if (needsDarkText(number)) {
-            button.setTextColor(Color.parseColor("#333333"));
-        } else {
-            button.setTextColor(Color.WHITE);
-        }
+        button.setTextColor(needsDarkText(number)
+            ? Color.parseColor("#333333")
+            : Color.WHITE);
     }
 
     private static void applyEmptyStyle(Button button) {
@@ -110,7 +110,7 @@ public class TileStyleHelper {
      * Applies styles to all buttons in the list.
      * Call this after distributeData() on a new game.
      */
-    public static void applyStyleToAll(java.util.List<Button> buttons) {
+    public static void applyStyleToAll(List<Button> buttons) {
         for (Button button : buttons) {
             applyStyle(button);
         }

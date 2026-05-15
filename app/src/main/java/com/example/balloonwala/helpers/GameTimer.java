@@ -63,17 +63,6 @@ public class GameTimer {
         }
     }
 
-    /** Resets the timer back to zero without starting it. */
-    public void reset() {
-        chronometer.stop();
-        chronometer.setBase(SystemClock.elapsedRealtime());
-        running = false;
-    }
-
-    public boolean isRunning() {
-        return running;
-    }
-
     // ── Elapsed Time ──────────────────────────────────────
 
     /** Returns elapsed milliseconds since the timer started. */

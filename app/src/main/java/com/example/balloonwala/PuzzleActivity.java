@@ -31,7 +31,7 @@ import org.apache.commons.lang3.StringUtils;
 public class PuzzleActivity extends AppCompatActivity
         implements ButtonManager.OnTileClickListener {
 
-    private int columns = 16;
+    private int columns = AppConstants.FIFTEEN_PUZZLE;
 
     // ── Helpers ───────────────────────────────────────────
     private ButtonManager     buttonManager;
@@ -49,7 +49,7 @@ public class PuzzleActivity extends AppCompatActivity
 
         setSupportActionBar(findViewById(R.id.toolbar));
 
-        columns = getIntent().getIntExtra(AppConstants.COLUMNS, 16);
+        columns = getIntent().getIntExtra(NavigationConstants.COLUMNS, AppConstants.FIFTEEN_PUZZLE);
         setTitle(columns == AppConstants.EIGHT_PUZZLE? R.string.eight_puzzle : R.string.fifteen_puzzle);
 
         initialiseHelpers();
