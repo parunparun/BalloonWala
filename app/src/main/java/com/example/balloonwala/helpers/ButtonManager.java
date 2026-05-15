@@ -13,13 +13,13 @@ import java.util.List;
 
 /**
  * Manages all puzzle tile buttons.
- *
+ * <p>
  * Responsibilities:
  * - Register all 16 buttons from the layout
  * - Show / hide buttons based on puzzle mode (8 or 15 puzzle)
  * - Attach touch listeners to each button
  * - Look up a button by its view ID
- *
+ * <p>
  * Uses the OnTileClickListener interface to notify
  * PuzzleActivity when a tile is tapped — keeping
  * ButtonManager independent of PuzzleActivity.

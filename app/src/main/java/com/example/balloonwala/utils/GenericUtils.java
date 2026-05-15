@@ -10,7 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 
 /**
  * Utility methods for puzzle tile operations.
- *
+ * <p>
  * Responsibilities:
  * - Swapping tile text between buttons
  * - Checking if a tile is the empty slot
@@ -90,7 +90,7 @@ public class GenericUtils {
 
     /**
      * Checks if a given puzzle arrangement is solvable.
-     *
+     * <p>
      * Rules:
      * - For odd grid width (3x3 = 8-puzzle): solvable if inversion count is even
      * - For even grid width (4x4 = 15-puzzle): solvable if

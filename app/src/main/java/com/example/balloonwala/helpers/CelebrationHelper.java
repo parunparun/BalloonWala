@@ -12,13 +12,12 @@ import java.util.Random;
 
 /**
  * Handles the puzzle solved celebration experience.
- *
+ * <p>
  * Responsibilities:
  * - Show / hide the win overlay
  * - Run the balloon shower animation (balloons float upward)
  * - Display solved stats and new best indicator
  */
-
 public class CelebrationHelper {
 
     private static final String[] BALLOON_EMOJIS = {

@@ -1,6 +1,5 @@
 package com.example.balloonwala;
 
-/* JADX INFO: loaded from: classes2.dex */
 public final class BuildConfig {
     public static final String APPLICATION_ID = "com.example.balloonwala";
     public static final String BUILD_TYPE = "debug";

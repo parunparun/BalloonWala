@@ -9,7 +9,7 @@ import com.example.balloonwala.AppConstants;
 
 /**
  * Manages the game timer using Android's Chronometer widget.
- *
+ * <p>
  * Responsibilities:
  * - Start, stop, pause, resume and reset the timer
  * - Format elapsed time into a readable string

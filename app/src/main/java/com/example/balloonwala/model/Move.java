@@ -2,8 +2,8 @@ package com.example.balloonwala.model;
 
 import android.widget.Button;
 
-/* JADX INFO: loaded from: classes2.dex */
 public class Move {
+
     private final Button fromButton;
     private final Button toButton;
 

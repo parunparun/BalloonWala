@@ -14,7 +14,7 @@ import java.util.List;
 
 /**
  * Manages the game state for a puzzle session.
- *
+ * <p>
  * Responsibilities:
  * - Track current move count (stepsCount)
  * - Manage the undo stack (list of moves)

@@ -6,11 +6,9 @@ import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-/* JADX INFO: loaded from: classes2.dex */
 public class MainActivity extends AppCompatActivity {
-    public static final String COLUMNS = "com.example.balloonwala.MESSAGE";
 
-    @Override // androidx.appcompat.app.AppCompatActivity, androidx.fragment.app.FragmentActivity, androidx.activity.ComponentActivity, androidx.core.app.ComponentActivity, android.app.Activity
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -20,13 +18,13 @@ public class MainActivity extends AppCompatActivity {
 
     public void renderEightPuzzle(View view) {
         Intent intent = new Intent(this, PuzzleActivity.class);
-        intent.putExtra(COLUMNS, 9);
+        intent.putExtra(AppConstants.COLUMNS, AppConstants.EIGHT_PUZZLE);
         startActivity(intent);
     }
 
     public void renderFifteenPuzzle(View view) {
         Intent intent = new Intent(this, PuzzleActivity.class);
-        intent.putExtra(COLUMNS, 16);
+        intent.putExtra(AppConstants.COLUMNS, AppConstants.FIFTEEN_PUZZLE);
         startActivity(intent);
     }
 }

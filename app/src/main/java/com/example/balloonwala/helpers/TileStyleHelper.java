@@ -7,12 +7,14 @@ import android.widget.Button;
 import androidx.core.content.ContextCompat;
 import com.example.balloonwala.R;
 
+import java.util.Objects;
+
 /**
  * Applies fixed colors to each puzzle tile based on its number.
- *
+ * <p>
  * Each number always maps to the same color so kids can
  * recognise pieces by color as well as by number.
- *
+ * <p>
  * Call applyStyle(button) after every:
  *  - Initial tile distribution
  *  - Tile swap
@@ -46,7 +48,7 @@ public class TileStyleHelper {
     /**
      * Applies the correct background color and text color
      * to a tile button based on its current text value.
-     *
+     * <p>
      * Empty tiles get a subtle hollow grey appearance.
      */
     public static void applyStyle(Button button) {
@@ -74,7 +76,7 @@ public class TileStyleHelper {
 
         if (drawable != null) {
             GradientDrawable tileDrawable =
-                    (GradientDrawable) drawable.getConstantState()
+                    (GradientDrawable) Objects.requireNonNull(drawable.getConstantState())
                             .newDrawable().mutate();
             tileDrawable.setColor(Color.parseColor(TILE_COLORS[number - 1]));
             button.setBackground(tileDrawable);

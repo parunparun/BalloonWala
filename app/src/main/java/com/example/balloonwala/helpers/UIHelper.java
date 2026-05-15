@@ -9,13 +9,13 @@ import com.example.balloonwala.R;
 
 /**
  * Manages all UI updates for the puzzle screen.
- *
+ * <p>
  * Responsibilities:
  * - Update the live move counter display
  * - Show / clear the solved message
  * - Enable / disable the undo button
  * - Show the confirmation dialog (Play Again / Back)
- *
+ * <p>
  * PuzzleActivity holds an instance and delegates
  * all UI changes here — keeping the activity clean.
  */
@@ -53,7 +53,7 @@ public class UIHelper {
     /**
      * Shows a confirmation dialog with Yes / No buttons.
      * Runs onConfirm if the user taps Yes.
-     *
+     * <p>
      * Used for both Play Again and Back to Main Menu.
      */
     public void showConfirmDialog(String title, int messageResId, Runnable onConfirm) {

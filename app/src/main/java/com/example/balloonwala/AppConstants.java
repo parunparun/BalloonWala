@@ -2,12 +2,12 @@ package com.example.balloonwala;
 
 /**
  * Single source of truth for all shared constants.
- *
- * Centralises:
+ * <p>
+ * Centralizes:
  * - Puzzle mode identifiers (replaces magic numbers 9 and 16)
  * - SharedPreferences name (previously duplicated in GameTimer and GameState)
  */
-public class AppConstants {
+public final class AppConstants {
 
     // ── Puzzle Modes ──────────────────────────────────────
     /** Column count for 8-puzzle (3×3 grid = 9 cells) */
@@ -20,6 +20,10 @@ public class AppConstants {
     /** Shared preferences file name used across the app */
     public static final String PREFS_NAME  = "BalloonWalaPrefs";
 
-    // Prevent instantiation
-    private AppConstants() {}
+    public static final String COLUMNS = "com.example.balloonwala.MESSAGE";
+
+    // Private constructor to prevent instantiation
+    private AppConstants() {
+        throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
+    }
 }

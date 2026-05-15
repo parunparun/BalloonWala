@@ -18,7 +18,7 @@ import org.apache.commons.lang3.StringUtils;
 
 /**
  * PuzzleActivity — pure orchestrator.
- *
+ * <p>
  * Wires together:
  *  - ButtonManager      →  tile button setup and lookup
  *  - GameTimer          →  timer start/stop/pause/resume
@@ -49,7 +49,7 @@ public class PuzzleActivity extends AppCompatActivity
 
         setSupportActionBar(findViewById(R.id.toolbar));
 
-        columns = getIntent().getIntExtra(MainActivity.COLUMNS, 16);
+        columns = getIntent().getIntExtra(AppConstants.COLUMNS, 16);
         setTitle(columns == AppConstants.EIGHT_PUZZLE? R.string.eight_puzzle : R.string.fifteen_puzzle);
 
         initialiseHelpers();
