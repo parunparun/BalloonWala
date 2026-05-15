@@ -22,9 +22,43 @@
     <color name="cardview_light_background">#ffffffff</color>
     <color name="cardview_shadow_end_color">#03000000</color>
     <color name="cardview_shadow_start_color">#37000000</color>
-    <color name="colorAccent">#00ff00</color>
-    <color name="colorPrimary">#008577</color>
-    <color name="colorPrimaryDark">#00574b</color>
+
+    <!-- ── App Theme Colors ───────────────────────────────
+         colorPrimary drives toolbar, stats bar, celebration
+         button and title — change once to retheme the app  -->
+    <color name="colorPrimary">#FF6B6B</color>
+    <color name="colorPrimaryDark">#E05555</color>
+    <color name="colorAccent">#1DD1A1</color>
+
+    <!-- ── App Background ────────────────────────────────
+     Warm cream — used on CoordinatorLayout and
+     ConstraintLayout backgrounds                       -->
+    <color name="colorBackground">#FFF9F0</color>
+
+    <!-- ── Stats Bar ─────────────────────────────────────
+     Semi-transparent white boxes inside the red bar   -->
+    <color name="colorStatBox">#33FFFFFF</color>
+    <color name="colorStatLabel">#CCFFFFFF</color>
+
+    <!-- ── Action Buttons ────────────────────────────────
+         Play Again (green), Undo (grey), Menu (blue)      -->
+    <color name="colorBtnPlayAgain">#1DD1A1</color>
+    <color name="colorBtnUndo">#DFE6E9</color>
+    <color name="colorBtnUndoText">#636E72</color>
+    <color name="colorBtnMenu">#54A0FF</color>
+
+    <!-- ── Celebration Overlay ───────────────────────────
+         Semi-transparent white overlay background         -->
+    <color name="colorOverlay">#EDFFFFFF</color>
+
+    <!-- ── Text Colors ───────────────────────────────────
+         Secondary grey text (stats in celebration screen) -->
+    <color name="colorTextSecondary">#666666</color>
+
+    <!-- ── Best Score ────────────────────────────────────
+         Orange highlight for new best indicator           -->
+    <color name="colorBestScore">#FF9F43</color>
+
     <color name="design_bottom_navigation_shadow_color">#14000000</color>
     <color name="design_dark_default_color_background">#121212</color>
     <color name="design_dark_default_color_error">#cf6679</color>

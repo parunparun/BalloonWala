@@ -22,18 +22,15 @@ import com.example.balloonwala.R;
 public class UIHelper {
     private final Context context;
     private final TextView movesCountTextView;
-    private final TextView outputTextView;
     private final Button   undoButton;
 
     public UIHelper(
             Context  context,
             TextView movesCountTextView,
-            TextView outputTextView,
             Button   undoButton) {
 
         this.context             = context;
         this.movesCountTextView  = movesCountTextView;
-        this.outputTextView      = outputTextView;
         this.undoButton          = undoButton;
     }
 
@@ -42,18 +39,6 @@ public class UIHelper {
     /** Updates the live move counter shown above the puzzle grid. */
     public void updateMovesDisplay(int count) {
         movesCountTextView.setText(String.valueOf(count));
-    }
-
-    // ── Solved Message ────────────────────────────────────
-
-    /** Shows the win message when the puzzle is solved. */
-    public void showSolvedMessage(String message) {
-        outputTextView.setText(message);
-    }
-
-    /** Clears the solved message e.g. on Play Again. */
-    public void clearSolvedMessage() {
-        outputTextView.setText("");
     }
 
     // ── Undo Button ───────────────────────────────────────

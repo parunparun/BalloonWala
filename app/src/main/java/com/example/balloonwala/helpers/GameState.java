@@ -3,9 +3,13 @@ package com.example.balloonwala.helpers;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.widget.Button;
+
+import com.example.balloonwala.AppConstants;
 import com.example.balloonwala.model.Move;
 import com.example.balloonwala.utils.GenericUtils;
-import java.util.ArrayList;
+
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.List;
 
 /**
@@ -20,19 +24,19 @@ import java.util.List;
  */
 public class GameState {
 
-    // SharedPreferences keys for best move counts
-    private static final String PREFS_NAME          = "BalloonWalaPrefs";
-    private static final String KEY_BEST_MOVES_8    = "best_moves_8_puzzle";
-    private static final String KEY_BEST_MOVES_15   = "best_moves_15_puzzle";
-    private static final int    NO_BEST_MOVES       = -1;
+    private static final String KEY_BEST_MOVES_8  = "best_moves_8_puzzle";
+    private static final String KEY_BEST_MOVES_15 = "best_moves_15_puzzle";
+    private static final int    NO_BEST_MOVES     = -1;
 
     private final SharedPreferences prefs;
 
-    private int stepsCount = 0;
-    private final List<Move> moveHistory = new ArrayList<>();
+    private int          stepsCount  = 0;
+
+    // ArrayDeque gives O(1) push/pop — better than ArrayList.add(0)/remove(0)
+    private final Deque<Move> moveHistory = new ArrayDeque<>();
 
     public GameState(Context context) {
-        this.prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        this.prefs = context.getSharedPreferences(AppConstants.PREFS_NAME, Context.MODE_PRIVATE);
     }
 
     // ── Reset ─────────────────────────────────────────────
@@ -47,7 +51,7 @@ public class GameState {
 
     /** Records a new move and increments the step counter. */
     public void addMove(Button fromButton, Button toButton) {
-        moveHistory.add(0, new Move(fromButton, toButton));
+        moveHistory.push(new Move(fromButton, toButton));
         stepsCount++;
     }
 
@@ -69,15 +73,9 @@ public class GameState {
      * Returns null if there is nothing to undo.
      */
     public Move undoLastMove() {
-        if (moveHistory.isEmpty()) {
-            return null;
-        }
-        Move lastMove = moveHistory.get(0);
-        moveHistory.remove(0);
-        if (stepsCount > 0) {
-            stepsCount--;
-        }
-        return lastMove;
+        if (moveHistory.isEmpty()) return null;
+        if (stepsCount > 0) stepsCount--;
+        return moveHistory.pop();
     }
 
     // ── Solved Check ──────────────────────────────────────
@@ -102,7 +100,7 @@ public class GameState {
      * @param columns 9 for 8-puzzle, 16 for 15-puzzle
      */
     public boolean checkAndSaveBestMoves(int columns) {
-        String key = columns == 9 ? KEY_BEST_MOVES_8 : KEY_BEST_MOVES_15;
+        String key = getKey(columns);
         int bestMoves = prefs.getInt(key, NO_BEST_MOVES);
 
         if (bestMoves == NO_BEST_MOVES || stepsCount < bestMoves) {
@@ -112,19 +110,9 @@ public class GameState {
         return false;
     }
 
-    /**
-     * Returns the stored best move count, or -1 if none exists yet.
-     *
-     * @param columns 9 for 8-puzzle, 16 for 15-puzzle
-     */
-    public int getBestMoves(int columns) {
-        String key = columns == 9 ? KEY_BEST_MOVES_8 : KEY_BEST_MOVES_15;
-        return prefs.getInt(key, NO_BEST_MOVES);
-    }
-
-    /** Clears the saved best move count for a given puzzle mode. */
-    public void clearBestMoves(int columns) {
-        String key = columns == 9 ? KEY_BEST_MOVES_8 : KEY_BEST_MOVES_15;
-        prefs.edit().remove(key).apply();
+    private String getKey(int columns) {
+        return columns == AppConstants.EIGHT_PUZZLE
+                ? KEY_BEST_MOVES_8
+                : KEY_BEST_MOVES_15;
     }
 }

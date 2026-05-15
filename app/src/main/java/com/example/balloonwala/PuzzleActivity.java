@@ -4,14 +4,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Chronometer;
-import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import com.example.balloonwala.helpers.ButtonManager;
+import com.example.balloonwala.helpers.CelebrationHelper;
 import com.example.balloonwala.helpers.GameState;
 import com.example.balloonwala.helpers.GameTimer;
+import com.example.balloonwala.helpers.TileStyleHelper;
 import com.example.balloonwala.helpers.UIHelper;
 import com.example.balloonwala.model.Move;
 import com.example.balloonwala.utils.GenericUtils;
@@ -21,13 +20,12 @@ import org.apache.commons.lang3.StringUtils;
  * PuzzleActivity — pure orchestrator.
  *
  * Wires together:
- *  - ButtonManager  →  tile button setup and lookup
- *  - GameTimer      →  timer start/stop/pause/resume
- *  - GameState      →  move count, undo stack, solved check
- *  - UIHelper       →  all UI updates and dialogs
- *
- * Contains zero UI logic, zero timer logic,
- * zero state logic — just coordinates the helpers.
+ *  - ButtonManager      →  tile button setup and lookup
+ *  - GameTimer          →  timer start/stop/pause/resume
+ *  - GameState          →  move count, undo stack, solved check
+ *  - UIHelper           →  UI updates and dialogs
+ *  - TileStyleHelper    →  fixed colors per tile number
+ *  - CelebrationHelper  →  balloon shower and win overlay
  */
 
 public class PuzzleActivity extends AppCompatActivity
@@ -36,10 +34,11 @@ public class PuzzleActivity extends AppCompatActivity
     private int columns = 16;
 
     // ── Helpers ───────────────────────────────────────────
-    private ButtonManager buttonManager;
-    private GameTimer     gameTimer;
-    private GameState     gameState;
-    private UIHelper      uiHelper;
+    private ButtonManager     buttonManager;
+    private GameTimer         gameTimer;
+    private GameState         gameState;
+    private UIHelper          uiHelper;
+    private CelebrationHelper celebrationHelper;
 
     // ── Lifecycle ─────────────────────────────────────────
 
@@ -48,10 +47,10 @@ public class PuzzleActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.puzzle);
 
-        setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
+        setSupportActionBar(findViewById(R.id.toolbar));
 
         columns = getIntent().getIntExtra(MainActivity.COLUMNS, 16);
-        setTitle(columns == 9 ? R.string.eight_puzzle : R.string.fifteen_puzzle);
+        setTitle(columns == AppConstants.EIGHT_PUZZLE? R.string.eight_puzzle : R.string.fifteen_puzzle);
 
         initialiseHelpers();
         startNewGame();
@@ -77,7 +76,7 @@ public class PuzzleActivity extends AppCompatActivity
 
         // GameTimer
         gameTimer = new GameTimer(
-                (Chronometer) findViewById(R.id.timerChronometer), this);
+                findViewById(R.id.timerChronometer), this);
 
         // GameState
         gameState = new GameState(this);
@@ -85,21 +84,29 @@ public class PuzzleActivity extends AppCompatActivity
         // UIHelper
         uiHelper = new UIHelper(
                 this,
-                (TextView) findViewById(R.id.movesCountTextView),
-                (TextView) findViewById(R.id.outputTextView),
-                (Button)   findViewById(R.id.undo));
+                 findViewById(R.id.movesCountTextView),
+                 findViewById(R.id.undo));
+
+        celebrationHelper = new CelebrationHelper(this);
     }
 
     // ── New Game ──────────────────────────────────────────
 
     private void startNewGame() {
+        // Hide celebration if showing
+        if (celebrationHelper.isShowing()) {
+            celebrationHelper.hideCelebration();
+        }
+
         gameState.reset();
         gameTimer.start();
 
-        GenericUtils.distributeData(columns + 1, 1, buttonManager.getButtonList());
+        GenericUtils.distributeData(columns + 1, buttonManager.getButtonList());
+
+        // Apply fixed colors to all tiles after distribution
+        TileStyleHelper.applyStyleToAll(buttonManager.getButtonList());
 
         uiHelper.updateMovesDisplay(0);
-        uiHelper.clearSolvedMessage();
         uiHelper.setUndoEnabled(false);
 
         for (Button b : buttonManager.getButtonList()) {
@@ -137,6 +144,10 @@ public class PuzzleActivity extends AppCompatActivity
         GenericUtils.swapData(buttonPressed, emptyNeighbour);
         gameState.addMove(buttonPressed, emptyNeighbour);
 
+        // Reapply colors after swap so tiles keep their fixed colors
+        TileStyleHelper.applyStyle(buttonPressed);
+        TileStyleHelper.applyStyle(emptyNeighbour);
+
         uiHelper.updateMovesDisplay(gameState.getStepsCount());
         uiHelper.setUndoEnabled(gameState.canUndo());
 
@@ -153,6 +164,11 @@ public class PuzzleActivity extends AppCompatActivity
         if (lastMove == null) return;
 
         GenericUtils.swapData(lastMove.getToButton(), lastMove.getFromButton());
+
+        // Reapply colors after undo swap
+        TileStyleHelper.applyStyle(lastMove.getToButton());
+        TileStyleHelper.applyStyle(lastMove.getFromButton());
+
         uiHelper.updateMovesDisplay(gameState.getStepsCount());
         uiHelper.setUndoEnabled(gameState.canUndo());
     }
@@ -177,7 +193,13 @@ public class PuzzleActivity extends AppCompatActivity
             message.append("\n🏆 New Best!");
         }
 
-        uiHelper.showSolvedMessage(message.toString());
+        String stats = gameState.getStepsCount() + " moves  ·  "
+                + gameTimer.getFormattedTime();
+
+        celebrationHelper.showCelebration(
+                stats,
+                newBestTime || newBestMoves,
+                this::startNewGame);
     }
 
     // ── Play Again ────────────────────────────────────────

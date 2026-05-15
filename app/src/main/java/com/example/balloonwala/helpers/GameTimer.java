@@ -5,6 +5,8 @@ import android.content.SharedPreferences;
 import android.os.SystemClock;
 import android.widget.Chronometer;
 
+import com.example.balloonwala.AppConstants;
+
 /**
  * Manages the game timer using Android's Chronometer widget.
  *
@@ -17,18 +19,17 @@ import android.widget.Chronometer;
 public class GameTimer {
 
     // SharedPreferences keys for best times
-    private static final String PREFS_NAME          = "BalloonWalaPrefs";
-    private static final String KEY_BEST_TIME_8     = "best_time_8_puzzle";
-    private static final String KEY_BEST_TIME_15    = "best_time_15_puzzle";
-    private static final long   NO_BEST_TIME        = -1L;
+    private static final String KEY_BEST_TIME_8  = "best_time_8_puzzle";
+    private static final String KEY_BEST_TIME_15 = "best_time_15_puzzle";
+    private static final long   NO_BEST_TIME     = -1L;
 
-    private final Chronometer chronometer;
+    private final Chronometer       chronometer;
     private final SharedPreferences prefs;
-    private boolean running = false;
+    private boolean                 running = false;
 
     public GameTimer(Chronometer chronometer, Context context) {
         this.chronometer = chronometer;
-        this.prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        this.prefs = context.getSharedPreferences(AppConstants.PREFS_NAME, Context.MODE_PRIVATE);
     }
 
     // ── Controls ──────────────────────────────────────────
@@ -91,11 +92,9 @@ public class GameTimer {
     private String formatMillis(long millis) {
         long seconds = (millis / 1000) % 60;
         long minutes = (millis / (1000 * 60)) % 60;
-        if (minutes > 0) {
-            return String.format("%d min %02d sec", minutes, seconds);
-        } else {
-            return String.format("%d sec", seconds);
-        }
+        return minutes > 0
+                ? String.format("%d min %02d sec", minutes, seconds)
+                : String.format("%d sec", seconds);
     }
 
     // ── Best Time ─────────────────────────────────────────
@@ -107,7 +106,7 @@ public class GameTimer {
      * @param columns 9 for 8-puzzle, 16 for 15-puzzle
      */
     public boolean checkAndSaveBestTime(int columns) {
-        String key = columns == 9 ? KEY_BEST_TIME_8 : KEY_BEST_TIME_15;
+        String key = getKey(columns);
         long currentTime = getElapsedMillis();
         long bestTime = prefs.getLong(key, NO_BEST_TIME);
 
@@ -118,24 +117,9 @@ public class GameTimer {
         return false;
     }
 
-    /**
-     * Returns the stored best time as a formatted string.
-     * Returns null if no best time exists yet.
-     *
-     * @param columns 9 for 8-puzzle, 16 for 15-puzzle
-     */
-    public String getBestTimeFormatted(int columns) {
-        String key = columns == 9 ? KEY_BEST_TIME_8 : KEY_BEST_TIME_15;
-        long bestTime = prefs.getLong(key, NO_BEST_TIME);
-        if (bestTime == NO_BEST_TIME) {
-            return null;
-        }
-        return formatMillis(bestTime);
-    }
-
-    /** Clears the saved best time for a given puzzle mode. */
-    public void clearBestTime(int columns) {
-        String key = columns == 9 ? KEY_BEST_TIME_8 : KEY_BEST_TIME_15;
-        prefs.edit().remove(key).apply();
+    private String getKey(int columns) {
+        return columns == AppConstants.EIGHT_PUZZLE
+                ? KEY_BEST_TIME_8
+                : KEY_BEST_TIME_15;
     }
 }

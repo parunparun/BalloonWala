@@ -5,68 +5,50 @@ import android.widget.Button;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 
-/* JADX INFO: loaded from: classes2.dex */
+/**
+ * Utility methods for puzzle tile operations.
+ *
+ * Responsibilities:
+ * - Swapping tile text between buttons
+ * - Checking if a tile is the empty slot
+ * - Distributing numbers to tiles (with solvability guarantee)
+ * - Checking if the puzzle is solved
+ * - Enabling / disabling all tiles
+ */
 public class GenericUtils {
+
+    // ── Tile Swap ─────────────────────────────────────────
+
+    /** Swaps the text content between two tile buttons. */
     public static void swapData(Button buttonPressed, Button buttonEmpty) {
         CharSequence text = buttonPressed.getText();
         buttonPressed.setText(buttonEmpty.getText());
         buttonEmpty.setText(text);
     }
 
-    public static void undo(Button buttonPressed, Button buttonEmpty) {
-        CharSequence text = buttonPressed.getText();
-        buttonPressed.setText(buttonEmpty.getText());
-        buttonEmpty.setText(text);
-    }
+    // ── Empty Tile Check ──────────────────────────────────
 
+    /**
+     * Returns true if the given view is a visible Button
+     * with blank (empty) text — i.e. the empty tile slot.
+     */
     public static boolean checkButton(View buttonEmpty) {
         return (buttonEmpty instanceof Button) &&
                 buttonEmpty.getVisibility() == View.VISIBLE &&
                 StringUtils.isBlank(((Button) buttonEmpty).getText());
     }
 
-    private static int getRandomInteger(int maximum, int minimum) {
-        return ((int) (Math.random() * ((double) (maximum - minimum)))) + minimum;
-    }
+    // ── Tile Distribution ─────────────────────────────────
 
-    private static void setData(int number, Button currentButton, int limit) {
-        if (number == limit) {
-            currentButton.setText("");
-        } else {
-            currentButton.setText(String.valueOf(number));
-        }
-        currentButton.setEnabled(true);
-    }
+    /**
+     * Assigns shuffled numbers to all tile buttons.
+     * Guarantees the resulting arrangement is solvable.
+     */
 
-    public static boolean solved(int limit, List<Button> buttonList) {
-        String startValue = "0";
-        for (Button button : buttonList) {
-            int startValueInt = Integer.parseInt(startValue) + 1;
-            if (startValueInt == limit) {
-                startValue = "";
-            } else {
-                startValue = String.valueOf(startValueInt);
-            }
-            if (!button.getText().toString().equalsIgnoreCase(startValue)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    public static void disableButtons(List<Button> buttonList) {
-        for (Button button : buttonList) {
-            button.setEnabled(false);
-        }
-    }
-
-    // BUG FIX 2: Replaced giant 16-case switch statement with a clean loop
-    public static void distributeData(int maximum, int minimum, List<Button> buttonList) {
+    public static void distributeData(int maximum, List<Button> buttonList) {
         int size = buttonList.size();
 
         // Generate a solvable shuffled list of numbers
@@ -78,7 +60,17 @@ public class GenericUtils {
         }
     }
 
-    // BUG FIX 4: Added solvability check so puzzle is always solvable
+    private static void setData(int number, Button currentButton, int limit) {
+        currentButton.setText(number == limit ? "" : String.valueOf(number));
+        currentButton.setEnabled(true);
+    }
+
+    // ── Solvability ───────────────────────────────────────
+
+    /**
+     * Generates a shuffled number arrangement guaranteed to be solvable.
+     * Keeps reshuffling until the solvability check passes.
+     */
     private static List<Integer> generateSolvableNumbers(int size, int limit) {
         List<Integer> numbers = new ArrayList<>();
 
@@ -132,5 +124,38 @@ public class GenericUtils {
             }
         }
         return inversions;
+    }
+
+    // ── Solved Check ──────────────────────────────────────
+
+    /**
+     * Returns true if all tiles are in the correct solved order.
+     *
+     * @param limit      the column count (9 for 8-puzzle, 16 for 15-puzzle)
+     * @param buttonList the full ordered list of tile buttons
+     */
+    public static boolean solved(int limit, List<Button> buttonList) {
+        String startValue = "0";
+        for (Button button : buttonList) {
+            int startValueInt = Integer.parseInt(startValue) + 1;
+            if (startValueInt == limit) {
+                startValue = "";
+            } else {
+                startValue = String.valueOf(startValueInt);
+            }
+            if (!button.getText().toString().equalsIgnoreCase(startValue)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    // ── Button State ──────────────────────────────────────
+
+    /** Disables all tile buttons e.g. when the puzzle is solved. */
+    public static void disableButtons(List<Button> buttonList) {
+        for (Button button : buttonList) {
+            button.setEnabled(false);
+        }
     }
 }

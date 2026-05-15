@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+
+import com.example.balloonwala.AppConstants;
 import com.example.balloonwala.R;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -87,7 +89,7 @@ public class ButtonManager {
 
         for (int id : BUTTON_IDS) {
             boolean is15PuzzleOnly = fifteenOnly.contains(id);
-            boolean visible = (columns == 16) || !is15PuzzleOnly;
+            boolean visible = (columns == AppConstants.FIFTEEN_PUZZLE) || !is15PuzzleOnly;
             registerButton(id, touchListener, visible);
         }
     }

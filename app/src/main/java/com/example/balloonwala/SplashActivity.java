@@ -8,25 +8,27 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import androidx.appcompat.app.AppCompatActivity;
 
-/* JADX INFO: loaded from: classes2.dex */
+/**
+ * Splash screen shown briefly on app launch.
+ * Navigates automatically to MainActivity after a short delay.
+ */
 public class SplashActivity extends AppCompatActivity {
-    ImageView balloon;
-    Animation balloonAnimation;
+
+    private static final int SPLASH_DELAY_MS = 2000;
 
     @Override // androidx.appcompat.app.AppCompatActivity, androidx.fragment.app.FragmentActivity, androidx.activity.ComponentActivity, androidx.core.app.ComponentActivity, android.app.Activity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
-        this.balloon = findViewById(R.id.imageView);
-        Animation animationLoadAnimation = AnimationUtils.loadAnimation(this, R.anim.fromtop);
-        this.balloonAnimation = animationLoadAnimation;
-        this.balloon.setAnimation(animationLoadAnimation);
-        // from class: com.example.balloonwala.SplashActivty.1
-// java.lang.Runnable
+        ImageView balloon = findViewById(R.id.imageView);
+        Animation animation = AnimationUtils.loadAnimation(this, R.anim.fromtop);
+        balloon.setAnimation(animation);
+
+        // Use Looper.getMainLooper() to explicitly tie the handler to the main thread
         new Handler().postDelayed(() -> {
             Intent intent = new Intent(SplashActivity.this, MainActivity.class);
             SplashActivity.this.startActivity(intent);
             SplashActivity.this.finish();
-        }, 2000L);
+        }, SPLASH_DELAY_MS);
     }
 }
