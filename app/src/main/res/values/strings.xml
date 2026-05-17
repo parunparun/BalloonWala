@@ -95,4 +95,9 @@
     <string name="splash_content">Balloon</string>
     <string name="status_bar_notification_info_overflow">999+</string>
     <string name="steps">step(s)</string>
+    <string name="pick_puzzle">Pick your puzzle!</string>
+    <string name="easy_label">⭐ Easy</string>
+    <string name="hard_label">🔥 Hard</string>
+    <string name="sound_on">🔊 Sound On</string>
+    <string name="sound_off">🔇 Sound Off</string>
 </resources>

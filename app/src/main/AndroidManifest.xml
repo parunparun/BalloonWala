@@ -11,6 +11,7 @@
         android:minSdkVersion="21"
         android:targetSdkVersion="29"/>
     <application
+        android:name=".BalloonWalaApp"
         android:theme="@style/AppTheme.AppBarOverlay"
         android:label="@string/app_name"
         android:icon="@mipmap/balloon_wala"
@@ -23,7 +24,7 @@
         android:appComponentFactory="androidx.core.app.CoreComponentFactory">
         <activity
             android:theme="@style/AppTheme.NoActionBar"
-            android:name="com.example.balloonwala.SplashActivty">
+            android:name="com.example.balloonwala.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
@@ -34,10 +35,10 @@
             android:label="@string/app_name"
             android:name="com.example.balloonwala.MainActivity"
             android:screenOrientation="portrait"
-            android:parentActivityName="com.example.balloonwala.SplashActivty">
+            android:parentActivityName="com.example.balloonwala.SplashActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".SplashActivty"/>
+                android:value=".SplashActivity"/>
         </activity>
         <activity
             android:theme="@style/AppTheme.NoActionBar"

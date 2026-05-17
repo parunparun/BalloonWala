@@ -10,6 +10,7 @@ import com.example.balloonwala.helpers.ButtonManager;
 import com.example.balloonwala.helpers.CelebrationHelper;
 import com.example.balloonwala.helpers.GameState;
 import com.example.balloonwala.helpers.GameTimer;
+import com.example.balloonwala.helpers.SoundHelper;
 import com.example.balloonwala.helpers.TileStyleHelper;
 import com.example.balloonwala.helpers.UIHelper;
 import com.example.balloonwala.model.Move;
@@ -39,6 +40,7 @@ public class PuzzleActivity extends AppCompatActivity
     private GameState         gameState;
     private UIHelper          uiHelper;
     private CelebrationHelper celebrationHelper;
+    private SoundHelper soundHelper;
 
     // ── Lifecycle ─────────────────────────────────────────
 
@@ -52,6 +54,9 @@ public class PuzzleActivity extends AppCompatActivity
         columns = getIntent().getIntExtra(NavigationConstants.COLUMNS, AppConstants.FIFTEEN_PUZZLE);
         setTitle(columns == AppConstants.EIGHT_PUZZLE? R.string.eight_puzzle : R.string.fifteen_puzzle);
 
+        // SoundHelper lives in Application — shared with MainActivity
+        soundHelper = ((BalloonWalaApp) getApplication()).getSoundHelper();
+
         initialiseHelpers();
         startNewGame();
     }
@@ -60,12 +65,14 @@ public class PuzzleActivity extends AppCompatActivity
     protected void onPause() {
         super.onPause();
         gameTimer.pause();
+        soundHelper.pauseMusic();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         gameTimer.resume();
+        soundHelper.resumeMusic();
     }
 
     // ── Initialise ────────────────────────────────────────
@@ -140,6 +147,9 @@ public class PuzzleActivity extends AppCompatActivity
 
         if (emptyNeighbour == null) return;
 
+        // Play tap sound immediately — before animation starts
+        soundHelper.playTileTap();
+
         // Perform the swap
         GenericUtils.swapData(buttonPressed, emptyNeighbour);
         gameState.addMove(buttonPressed, emptyNeighbour);
@@ -163,6 +173,8 @@ public class PuzzleActivity extends AppCompatActivity
         Move lastMove = gameState.undoLastMove();
         if (lastMove == null) return;
 
+        soundHelper.playTileTap();
+
         GenericUtils.swapData(lastMove.getToButton(), lastMove.getFromButton());
 
         // Reapply colors after undo swap
@@ -178,6 +190,7 @@ public class PuzzleActivity extends AppCompatActivity
     private void onPuzzleSolved() {
         gameTimer.stop();
         GenericUtils.disableButtons(buttonManager.getButtonList());
+        soundHelper.playWinFanfare();
 
         boolean newBestTime  = gameTimer.checkAndSaveBestTime(columns);
         boolean newBestMoves = gameState.checkAndSaveBestMoves(columns);
