@@ -26,6 +26,7 @@ public class GameTimer {
     private final Chronometer       chronometer;
     private final SharedPreferences prefs;
     private boolean                 running = false;
+    private long                    pausedAt = 0L;
 
     public GameTimer(Chronometer chronometer, Context context) {
         this.chronometer = chronometer;
@@ -53,12 +54,18 @@ public class GameTimer {
     public void pause() {
         if (running) {
             chronometer.stop();
+            pausedAt = SystemClock.elapsedRealtime();
         }
     }
+    
 
-    /** Resumes the timer after a pause. */
+    /** Resumes the timer after a pause — excludes background time. */
     public void resume() {
         if (running) {
+            // Shift base forward by however long we were paused
+            // so background time is never counted as game time
+            long pauseDuration = SystemClock.elapsedRealtime() - pausedAt;
+            chronometer.setBase(chronometer.getBase() + pauseDuration);
             chronometer.start();
         }
     }

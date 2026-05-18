@@ -6,6 +6,8 @@ import android.view.View;
 import android.widget.Button;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+
+import com.example.balloonwala.helpers.AnimationHelper;
 import com.example.balloonwala.helpers.ButtonManager;
 import com.example.balloonwala.helpers.CelebrationHelper;
 import com.example.balloonwala.helpers.GameState;
@@ -75,6 +77,14 @@ public class PuzzleActivity extends AppCompatActivity
         soundHelper.resumeMusic();
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // Clean up Handler callbacks to prevent leaks
+        // if Activity is destroyed while celebration is running
+        celebrationHelper.hideCelebration();
+    }
+
     // ── Initialise ────────────────────────────────────────
 
     private void initialiseHelpers() {
@@ -129,6 +139,8 @@ public class PuzzleActivity extends AppCompatActivity
      */
     @Override
     public void onTileClicked(Button buttonPressed) {
+        // Block taps during animation or on empty tile
+        if (AnimationHelper.isAnimating()) return;
         if (StringUtils.isBlank(buttonPressed.getText())) return;
 
         ConstraintLayout.LayoutParams params =
@@ -150,26 +162,32 @@ public class PuzzleActivity extends AppCompatActivity
         // Play tap sound immediately — before animation starts
         soundHelper.playTileTap();
 
-        // Perform the swap
-        GenericUtils.swapData(buttonPressed, emptyNeighbour);
-        gameState.addMove(buttonPressed, emptyNeighbour);
+        final Button finalEmpty = emptyNeighbour;
 
-        // Reapply colors after swap so tiles keep their fixed colors
-        TileStyleHelper.applyStyle(buttonPressed);
-        TileStyleHelper.applyStyle(emptyNeighbour);
+        // Animate slide — swap text and update state after animation completes
+        AnimationHelper.animateTileSlide(buttonPressed, finalEmpty, () -> {
+            GenericUtils.swapData(buttonPressed, finalEmpty);
+            gameState.addMove(buttonPressed, finalEmpty);
 
-        uiHelper.updateMovesDisplay(gameState.getStepsCount());
-        uiHelper.setUndoEnabled(gameState.canUndo());
+            TileStyleHelper.applyStyle(buttonPressed);
+            TileStyleHelper.applyStyle(finalEmpty);
 
-        // Check if puzzle is solved
-        if (gameState.isSolved(columns, buttonManager.getButtonList())) {
-            onPuzzleSolved();
-        }
+            uiHelper.updateMovesDisplay(gameState.getStepsCount());
+            uiHelper.setUndoEnabled(gameState.canUndo());
+
+            if (gameState.isSolved(columns, buttonManager.getButtonList())) {
+                onPuzzleSolved();
+            }
+        });
     }
 
     // ── Undo ──────────────────────────────────────────────
 
     public void undo(View view) {
+
+        // Block undo during animation
+        if (AnimationHelper.isAnimating()) return;
+
         Move lastMove = gameState.undoLastMove();
         if (lastMove == null) return;
 

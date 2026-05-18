@@ -1,12 +1,13 @@
 package com.example.balloonwala;
 
+import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 
 import com.example.balloonwala.helpers.SoundHelper;
 
@@ -32,6 +33,18 @@ public class MainActivity extends AppCompatActivity {
 
         soundHelper = ((BalloonWalaApp) getApplication()).getSoundHelper();
         updateSoundToggleButton();
+        startBalloonFloat();
+    }
+
+    private void startBalloonFloat() {
+        View balloon = findViewById(R.id.homeBalloon);
+        ObjectAnimator animator = ObjectAnimator.ofFloat(
+                balloon, "translationY", 0f, -30f);
+        animator.setDuration(1500);
+        animator.setRepeatCount(ObjectAnimator.INFINITE);
+        animator.setRepeatMode(ObjectAnimator.REVERSE);
+        animator.setInterpolator(new AccelerateDecelerateInterpolator());
+        animator.start();
     }
 
     // ── Lifecycle — music ──────────────────────────────────

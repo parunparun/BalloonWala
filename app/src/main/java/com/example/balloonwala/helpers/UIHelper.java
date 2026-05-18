@@ -5,6 +5,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.widget.Button;
 import android.widget.TextView;
+
+import androidx.core.content.ContextCompat;
+
 import com.example.balloonwala.R;
 
 /**
@@ -71,8 +74,8 @@ public class UIHelper {
                     .setTextColor(context.getResources()
                             .getColor(android.R.color.holo_red_light));
             alertDialog.getButton(DialogInterface.BUTTON_POSITIVE)
-                    .setTextColor(context.getResources()
-                            .getColor(android.R.color.holo_green_light));
+                    .setTextColor(ContextCompat.getColor(
+                            context, android.R.color.holo_green_light));
         });
 
         alertDialog.show();

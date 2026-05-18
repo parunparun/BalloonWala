@@ -14,13 +14,13 @@ import java.util.concurrent.Executors;
 
 /**
  * Manages all game sounds.
- *
+ * <p>
  * Tile tap and win fanfare are generated programmatically
  * using sine waves — no audio files needed for these.
- *
+ * <p>
  * Background music is optional — loaded from res/raw/background_music
  * if the file exists. App works silently without it.
- *
+ * <p>
  * Sound on/off preference is persisted in SharedPreferences.
  */
 public class SoundHelper {
@@ -179,16 +179,23 @@ public class SoundHelper {
                 .setTransferMode(AudioTrack.MODE_STATIC)
                 .build();
 
+        // Stop and release when playback reaches the end — no busy-wait
+        track.setNotificationMarkerPosition(buffer.length / 2);
+        track.setPlaybackPositionUpdateListener(
+            new AudioTrack.OnPlaybackPositionUpdateListener() {
+                @Override
+                public void onMarkerReached(AudioTrack audioTrack) {
+                    audioTrack.stop();
+                    audioTrack.release();
+                }
+
+                @Override
+                public void onPeriodicNotification(AudioTrack audioTrack) {
+                    // Not used
+                }
+            });
+
         track.write(buffer, 0, buffer.length);
         track.play();
-
-        // Wait for playback to finish then release
-        int totalSamples = buffer.length / 2;
-        while (track.getPlaybackHeadPosition() < totalSamples) {
-            try { Thread.sleep(10); } catch (InterruptedException ignored) {}
-        }
-
-        track.stop();
-        track.release();
     }
 }
