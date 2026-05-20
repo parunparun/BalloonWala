@@ -41,6 +41,18 @@ public class TileStyleHelper {
             "#FDCB6E",  // 15 — Amber  (dark text)
     };
 
+    // Pre-parsed int values — avoids Color.parseColor() on every tile tap
+    private static final int[] TILE_COLOR_INTS;
+    static {
+        TILE_COLOR_INTS = new int[TILE_COLORS.length];
+        for (int i = 0; i < TILE_COLORS.length; i++) {
+            TILE_COLOR_INTS[i] = Color.parseColor(TILE_COLORS[i]);
+        }
+    }
+
+    // Dark text color pre-parsed once
+    private static final int DARK_TEXT_COLOR  = Color.parseColor("#333333");
+
     // Tile numbers that need dark text (light colored tiles)
     private static final int[] DARK_TEXT_TILES = { 3, 5, 12, 14, 15 };
 
@@ -79,14 +91,15 @@ public class TileStyleHelper {
             if (constantState != null) {
                 GradientDrawable tileDrawable =
                         (GradientDrawable) constantState.newDrawable().mutate();
-                tileDrawable.setColor(Color.parseColor(TILE_COLORS[number - 1]));
+                // Use pre-parsed int — no Color.parseColor() on every tap
+                tileDrawable.setColor(TILE_COLOR_INTS[number - 1]);
                 button.setBackground(tileDrawable);
             }
         }
 
         // Apply text color — dark for light tiles, white for dark tiles
         button.setTextColor(needsDarkText(number)
-            ? Color.parseColor("#333333")
+            ? DARK_TEXT_COLOR
             : Color.WHITE);
     }
 
@@ -115,4 +128,5 @@ public class TileStyleHelper {
             applyStyle(button);
         }
     }
+
 }

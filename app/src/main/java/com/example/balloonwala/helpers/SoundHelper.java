@@ -196,6 +196,14 @@ public class SoundHelper {
             });
 
         track.write(buffer, 0, buffer.length);
+
+        // Guard against uninitialized AudioTrack — can happen if audio
+        // hardware is unavailable. Avoids IllegalStateException on play()
+        if (track.getState() == AudioTrack.STATE_UNINITIALIZED) {
+            track.release();
+            return;
+        }
+
         track.play();
     }
 }
