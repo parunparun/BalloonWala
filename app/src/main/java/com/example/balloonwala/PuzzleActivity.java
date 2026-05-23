@@ -2,6 +2,8 @@ package com.example.balloonwala;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.View;
 import android.widget.Button;
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,12 +14,19 @@ import com.example.balloonwala.helpers.ButtonManager;
 import com.example.balloonwala.helpers.CelebrationHelper;
 import com.example.balloonwala.helpers.GameState;
 import com.example.balloonwala.helpers.GameTimer;
+import com.example.balloonwala.helpers.HintHelper;
+import com.example.balloonwala.helpers.SolutionHelper;
 import com.example.balloonwala.helpers.SoundHelper;
 import com.example.balloonwala.helpers.TileStyleHelper;
 import com.example.balloonwala.helpers.UIHelper;
 import com.example.balloonwala.model.Move;
+import com.example.balloonwala.solver.PuzzleSolver;
 import com.example.balloonwala.utils.GenericUtils;
 import org.apache.commons.lang3.StringUtils;
+
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * PuzzleActivity — pure orchestrator.
@@ -29,6 +38,11 @@ import org.apache.commons.lang3.StringUtils;
  *  - UIHelper           →  UI updates and dialogs
  *  - TileStyleHelper    →  fixed colors per tile number
  *  - CelebrationHelper  →  balloon shower and win overlay
+ *  - AnimationHelper    →  smooth tile slide animation
+ *  - SoundHelper        →  tile tap, win fanfare, background music
+ *  - HintHelper         →  pulse animation on next correct tile
+ *  - SolutionHelper     →  autoplay step-by-step solution
+ *  - PuzzleSolver       →  IDA* solver running on background thread
  */
 
 public class PuzzleActivity extends AppCompatActivity
@@ -36,13 +50,29 @@ public class PuzzleActivity extends AppCompatActivity
 
     private int columns = AppConstants.FIFTEEN_PUZZLE;
 
-    // ── Helpers ───────────────────────────────────────────
+    // ── Game helpers ──────────────────────────────────────
     private ButtonManager     buttonManager;
     private GameTimer         gameTimer;
     private GameState         gameState;
     private UIHelper          uiHelper;
     private CelebrationHelper celebrationHelper;
-    private SoundHelper soundHelper;
+    private SoundHelper       soundHelper;
+    private HintHelper hintHelper;
+    private SolutionHelper solutionHelper;
+
+    // ── Solver infrastructure ─────────────────────────────
+    private final ExecutorService solverExecutor = Executors.newSingleThreadExecutor();
+    private final Handler mainHandler    = new Handler(Looper.getMainLooper());
+
+    // ── State flags ───────────────────────────────────────
+
+    /**
+     * True if the player used Hint or Solution during this game.
+     * Changes the win message to "Solved with help!" to encourage
+     * the child to try without assistance next time.
+     */
+    private boolean assistedSolve = false;
+
 
     // ── Lifecycle ─────────────────────────────────────────
 
@@ -83,6 +113,9 @@ public class PuzzleActivity extends AppCompatActivity
         // Clean up Handler callbacks to prevent leaks
         // if Activity is destroyed while celebration is running
         celebrationHelper.hideCelebration();
+        hintHelper.cancel();
+        solutionHelper.stop();
+        solverExecutor.shutdown();
     }
 
     // ── Initialise ────────────────────────────────────────
@@ -105,6 +138,8 @@ public class PuzzleActivity extends AppCompatActivity
                  findViewById(R.id.undo));
 
         celebrationHelper = new CelebrationHelper(this);
+        hintHelper        = new HintHelper();
+        solutionHelper    = new SolutionHelper();
     }
 
     // ── New Game ──────────────────────────────────────────
@@ -115,6 +150,7 @@ public class PuzzleActivity extends AppCompatActivity
             celebrationHelper.hideCelebration();
         }
 
+        assistedSolve = false;
         gameState.reset();
         gameTimer.start();
 
@@ -135,7 +171,7 @@ public class PuzzleActivity extends AppCompatActivity
 
     /**
      * Called by ButtonManager when the player taps a tile.
-     * Finds the empty neighbour and delegates swap to GenericUtils.
+     * Finds the empty neighbor and delegates swap to GenericUtils.
      */
     @Override
     public void onTileClicked(Button buttonPressed) {
@@ -203,6 +239,88 @@ public class PuzzleActivity extends AppCompatActivity
         uiHelper.setUndoEnabled(gameState.canUndo());
     }
 
+    // ── Hint ──────────────────────────────────────────────
+
+    public void showHint(View view) {
+        if (AnimationHelper.isAnimating()) return;
+        if (solutionHelper.isPlaying())    return;
+
+        assistedSolve = true;
+        setHintSolutionEnabled(false);
+
+        int[]     board    = GenericUtils.extractBoard(buttonManager.getButtonList());
+        int       gridSize = (int) Math.round(Math.sqrt(columns));
+
+        solverExecutor.execute(() -> {
+            List<Integer> moves = new PuzzleSolver().solve(board, gridSize);
+
+            mainHandler.post(() -> {
+                // Fix 3: Guard against Activity being destroyed while solver ran
+                if (isDestroyed() || isFinishing()) return;
+
+                setHintSolutionEnabled(true);
+
+                if (moves.isEmpty()) return; // already solved or timed out
+
+                int    nextTile   = moves.get(0);
+                Button hintButton = GenericUtils.findButtonForTile(
+                        nextTile, buttonManager.getButtonList());
+
+                if (hintButton != null) hintHelper.showHint(hintButton);
+            });
+        });
+    }
+
+    // ── Solution ──────────────────────────────────────────
+
+    public void showSolution(View view) {
+        if (AnimationHelper.isAnimating()) return;
+        if (solutionHelper.isPlaying())    return;
+
+        uiHelper.showConfirmDialog(
+                getString(R.string.solution_confirm_title),
+                R.string.solution_confirm_message,
+                this::startSolvingInBackground);
+    }
+
+    private void startSolvingInBackground() {
+        assistedSolve = true;
+        setHintSolutionEnabled(false);
+        uiHelper.setUndoEnabled(false);
+
+        // Fix 2: Disable tiles immediately so player cannot corrupt board
+        // while solver is running (can take up to 5 seconds for 15-puzzle)
+        for (Button b : buttonManager.getButtonList()) b.setEnabled(false);
+
+        int[]     board    = GenericUtils.extractBoard(buttonManager.getButtonList());
+        int       gridSize = (int) Math.round(Math.sqrt(columns));
+
+        solverExecutor.execute(() -> {
+            List<Integer> moves = new PuzzleSolver().solve(board, gridSize);
+
+            mainHandler.post(() -> {
+                // Fix 3: Guard against Activity being destroyed while solver ran
+                if (isDestroyed() || isFinishing()) return;
+
+                if (moves.isEmpty()) {
+                    // Timed out or already solved — restore UI
+                    for (Button b : buttonManager.getButtonList()) b.setEnabled(true);
+                    setHintSolutionEnabled(true);
+                    uiHelper.setUndoEnabled(gameState.canUndo());
+                    return;
+                }
+
+                // Disable tiles — player watches, not plays
+                for (Button b : buttonManager.getButtonList()) b.setEnabled(false);
+
+                solutionHelper.playSolution(
+                        moves,
+                        buttonManager.getButtonList(),
+                        this::onPuzzleSolved);
+            });
+        });
+    }
+
     // ── Solved ────────────────────────────────────────────
 
     private void onPuzzleSolved() {
@@ -213,23 +331,16 @@ public class PuzzleActivity extends AppCompatActivity
         boolean newBestTime  = gameTimer.checkAndSaveBestTime(columns);
         boolean newBestMoves = gameState.checkAndSaveBestMoves(columns);
 
-        StringBuilder message = new StringBuilder();
-        message.append(getString(R.string.puzzle_solved)).append("\n");
-        message.append(getString(R.string.in))
-                .append(" ").append(gameState.getStepsCount())
-                .append(" ").append(getString(R.string.steps)).append("\n");
-        message.append("Time: ").append(gameTimer.getFormattedTime());
-
-        if (newBestTime || newBestMoves) {
-            message.append("\n🏆 New Best!");
-        }
+        String result = assistedSolve
+                ? getString(R.string.solved_with_help)
+                : getString(R.string.puzzle_solved);
 
         String stats = gameState.getStepsCount() + " moves  ·  "
                 + gameTimer.getFormattedTime();
 
         celebrationHelper.showCelebration(
-                stats,
-                newBestTime || newBestMoves,
+                result + "\n" + stats,
+                !assistedSolve && (newBestTime || newBestMoves),
                 this::startNewGame);
     }
 
@@ -252,5 +363,14 @@ public class PuzzleActivity extends AppCompatActivity
                     gameTimer.stop();
                     startActivity(new Intent(this, MainActivity.class));
                 });
+    }
+
+    // ── UI Helpers ────────────────────────────────────────
+
+    private void setHintSolutionEnabled(boolean enabled) {
+        Button hint     = findViewById(R.id.btnHint);
+        Button solution = findViewById(R.id.btnSolution);
+        if (hint     != null) hint.setEnabled(enabled);
+        if (solution != null) solution.setEnabled(enabled);
     }
 }

@@ -59,6 +59,11 @@
          Orange highlight for new best indicator           -->
     <color name="colorBestScore">#FF9F43</color>
 
+    <!-- ── Hint + Solution Buttons ───────────────────────
+     Hint — warm amber; Solution — indigo              -->
+    <color name="colorBtnHint">#FDCB6E</color>
+    <color name="colorBtnSolution">#6C5CE7</color>
+
     <color name="design_bottom_navigation_shadow_color">#14000000</color>
     <color name="design_dark_default_color_background">#121212</color>
     <color name="design_dark_default_color_error">#cf6679</color>

@@ -97,7 +97,7 @@ public class GenericUtils {
      *   (inversion count + row of blank from bottom) is odd
      */
     private static boolean isSolvable(List<Integer> numbers, int size) {
-        int gridWidth = (int) Math.sqrt(size);
+        int gridWidth = (int) Math.round(Math.sqrt(size));
         int inversions = countInversions(numbers, size);
 
         if (gridWidth % 2 != 0) {
@@ -157,5 +157,45 @@ public class GenericUtils {
         for (Button button : buttonList) {
             button.setEnabled(false);
         }
+    }
+
+    // ── Solver Support ────────────────────────────────────
+
+    /**
+     * Converts the current button arrangement into a flat int array
+     * for use by PuzzleSolver. 0 represents the empty tile.
+     */
+    public static int[] extractBoard(List<Button> buttonList) {
+        int[] board = new int[buttonList.size()];
+        for (int i = 0; i < buttonList.size(); i++) {
+            String text = buttonList.get(i).getText().toString().trim();
+            board[i] = text.isEmpty() ? 0 : Integer.parseInt(text);
+        }
+        return board;
+    }
+
+    /**
+     * Finds the button currently showing the given tile number.
+     * Returns null if not found.
+     */
+    public static Button findButtonForTile(int tileNumber, List<Button> buttonList) {
+        for (Button button : buttonList) {
+            String text = button.getText().toString().trim();
+            if (!text.isEmpty() && Integer.parseInt(text) == tileNumber) {
+                return button;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Finds the button currently showing the empty tile (blank text).
+     * Returns null if not found.
+     */
+    public static Button findEmptyButton(List<Button> buttonList) {
+        for (Button button : buttonList) {
+            if (StringUtils.isBlank(button.getText())) return button;
+        }
+        return null;
     }
 }
