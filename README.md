@@ -1,49 +1,50 @@
-🎈 BalloonWala
+# 🎈 BalloonWala
+
 A colourful sliding-tile puzzle game for kids aged 5 and up, built as a native Android app in Java.
-Choose between the classic 8-puzzle (3×3 grid) or the more challenging 15-puzzle (4×4 grid). Slide the numbered tiles into the correct order to win — then enjoy the balloon shower celebration!
 
-Features
-Gameplay
+Choose between the classic **8-puzzle** (3×3 grid) or the more challenging **15-puzzle** (4×4 grid). 
+Slide the numbered tiles into the correct order to win — then enjoy the balloon shower celebration!
 
-Two puzzle modes — 8-puzzle (Easy ⭐) and 15-puzzle (Hard 🔥)
-Every generated puzzle is mathematically guaranteed to be solvable
-Live move counter and timer during play
-Undo — step back through your moves one at a time
-Best score and best time saved between sessions
+---
 
-Hint System
+## Features
 
-💡 Hint button — solver finds the optimal next move and shows it with:
+**Gameplay**
+- Two puzzle modes — 8-puzzle (Easy ⭐) and 15-puzzle (Hard 🔥)
+- Every generated puzzle is mathematically guaranteed to be solvable
+- Live move counter and timer during play
+- Undo — step back through your moves one at a time
+- Best score and best time saved between sessions
 
-A pulsing scale animation on the correct tile
-An amber glow on the empty slot
-A custom-drawn canvas arrow from tile center to empty slot center
+**Hint System**
+- 💡 Hint button — solver finds the optimal next move and shows it with:
+  - A pulsing scale animation on the correct tile
+  - An amber glow on the empty slot
+  - A custom-drawn canvas arrow from tile center to empty slot center
+- 🎯 Solution button — watch the full optimal solution auto-played step by step
 
+**Celebration**
+- Balloon shower animation when the puzzle is solved
+- Win fanfare generated programmatically (no audio files needed)
+- "New Best!" indicator when a personal record is broken
+- Assisted solve tracked separately — best scores only recorded for unassisted wins
 
-🎯 Solution button — watch the full optimal solution auto-played step by step
+**Sound**
+- Tile tap sound on every move (programmatic sine wave)
+- Win fanfare melody — C–E–G–C ascending notes
+- Optional background music (add `res/raw/background_music.ogg`)
+- Sound on/off toggle on the home screen, persisted between sessions
 
-Celebration
+**Home Screen**
+- Animated floating balloon
+- Mini grid preview on each puzzle button so kids understand the difficulty at a glance
+- No toolbar — full-screen, kid-friendly layout
 
-Balloon shower animation when the puzzle is solved
-Win fanfare generated programmatically (no audio files needed)
-"New Best!" indicator when a personal record is broken
-Assisted solve tracked separately — best scores only recorded for unassisted wins
+---
 
-Sound
+## Project Structure
 
-Tile tap sound on every move (programmatic sine wave)
-Win fanfare melody — C–E–G–C ascending notes
-Optional background music (add res/raw/background_music.ogg)
-Sound on/off toggle on the home screen, persisted between sessions
-
-Home Screen
-
-Animated floating balloon
-Mini grid preview on each puzzle button so kids understand the difficulty at a glance
-No toolbar — full-screen, kid-friendly layout
-
-
-Project Structure
+```
 com.example.balloonwala/
 │
 ├── AppConstants.java          Puzzle mode sizes + SharedPreferences name
@@ -78,68 +79,134 @@ com.example.balloonwala/
 │
 └── views/
     └── HintArrowView.java     Custom Canvas view — draws the hint arrow
+```
 
-Architecture
-PuzzleActivity is a pure orchestrator — it contains zero game logic itself. Every responsibility lives in a dedicated helper:
-HelperResponsibilityButtonManagerRegisters all 16 tile buttons, fires OnTileClickListenerGameTimerTracks elapsed time, persists best time per modeGameStateTracks move count and undo stack, persists best moves per modeUIHelperUpdates move counter display and shows confirmation dialogsTileStyleHelperApplies fixed color to each tile number (1=red, 2=orange…)AnimationHelperAnimates tile slides, blocks input during animationSoundHelperPlays sounds and manages background music lifecycleHintHelperCoordinates pulse + glow + arrow for the hint featureSolutionHelperSequences auto-play of solver moves with delaysCelebrationHelperBalloon shower + win overlay with fade-inPuzzleSolverIDA* with Manhattan Distance — finds optimal solution
+---
 
-Solver
-The hint and solution features use IDA* (Iterative Deepening A*) with the Manhattan Distance heuristic.
+## Architecture
 
-Admissible heuristic — guarantees the optimal (fewest moves) solution
-Memory efficient — O(depth) space, suitable for a mobile device
-5-second timeout prevents ANR on hard 15-puzzle positions
-Runs on a background thread — UI never blocked
-Board is captured as a snapshot before the solver starts, preventing corruption if the player moves tiles
+`PuzzleActivity` is a **pure orchestrator** — it contains zero game logic itself. Every responsibility lives in a dedicated helper:
 
+| Helper | Responsibility |
+|---|---|
+| `ButtonManager` | Registers all 16 tile buttons, fires `OnTileClickListener` |
+| `GameTimer` | Tracks elapsed time, persists best time per mode |
+| `GameState` | Tracks move count and undo stack, persists best moves per mode |
+| `UIHelper` | Updates move counter display and shows confirmation dialogs |
+| `TileStyleHelper` | Applies fixed color to each tile number (1=red, 2=orange…) |
+| `AnimationHelper` | Animates tile slides, blocks input during animation |
+| `SoundHelper` | Plays sounds and manages background music lifecycle |
+| `HintHelper` | Coordinates pulse + glow + arrow for the hint feature |
+| `SolutionHelper` | Sequences auto-play of solver moves with delays |
+| `CelebrationHelper` | Balloon shower + win overlay with fade-in |
+| `PuzzleSolver` | IDA* with Manhattan Distance — finds optimal solution |
 
-Tile Colors
+---
+
+## Solver
+
+The hint and solution features use **IDA\* (Iterative Deepening A\*)** with the **Manhattan Distance heuristic**.
+
+- Admissible heuristic — guarantees the **optimal** (fewest moves) solution
+- Memory efficient — O(depth) space, suitable for a mobile device
+- 5-second timeout prevents ANR on hard 15-puzzle positions
+- Runs on a background thread — UI never blocked
+- Board is captured as a snapshot before the solver starts, preventing corruption if the player moves tiles
+
+---
+
+## Tile Colors
+
 Each number always maps to the same color so kids can recognise pieces visually:
-TileColor1🔴 Red #FF6B6B2🟠 Orange #FF9F433🟡 Yellow #F9CA244🟢 Green #6AB04C5🩷 Pink #FF9FF36🔵 Blue #54A0FF7🟣 Purple #5F27CD8🩵 Teal #00D2D39–15Mint, Rose, Indigo, Peach, Sky, Aqua, Amber
 
-Setup
-Prerequisites
+| Tile | Color |
+|---|---|
+| 1 | 🔴 Red `#FF6B6B` |
+| 2 | 🟠 Orange `#FF9F43` |
+| 3 | 🟡 Yellow `#F9CA24` |
+| 4 | 🟢 Green `#6AB04C` |
+| 5 | 🩷 Pink `#FF9FF3` |
+| 6 | 🔵 Blue `#54A0FF` |
+| 7 | 🟣 Purple `#5F27CD` |
+| 8 | 🩵 Teal `#00D2D3` |
+| 9–15 | Mint, Rose, Indigo, Peach, Sky, Aqua, Amber |
 
-Android Studio (latest stable)
-Android SDK API 26+
-Java 8
+---
 
-Required manifest change
-Add to the <application> tag in AndroidManifest.xml:
-xmlandroid:name=".BalloonWalaApp"
-Optional background music
+## Setup
 
-Create res/raw/ folder in Android Studio
-Add a file named background_music.ogg (or .mp3)
-The app works silently without it — SoundHelper skips gracefully if the file is missing
+### Prerequisites
+- Android Studio (latest stable)
+- Android SDK API 26+
+- Java 8
+
+### Required manifest change
+Add to the `<application>` tag in `AndroidManifest.xml`:
+```xml
+android:name=".BalloonWalaApp"
+```
+
+### Optional background music
+1. Create `res/raw/` folder in Android Studio
+2. Add a file named `background_music.ogg` (or `.mp3`)
+3. The app works silently without it — `SoundHelper` skips gracefully if the file is missing
 
 Free music sources:
+- [mixkit.co/free-stock-music](https://mixkit.co/free-stock-music) → filter by Children
+- [pixabay.com/music](https://pixabay.com/music) → search "kids game"
 
-mixkit.co/free-stock-music → filter by Children
-pixabay.com/music → search "kids game"
-
-Build and install
-bash# Build debug APK
+### Build and install
+```bash
+# Build debug APK
 ./gradlew assembleDebug
 
 # Install on connected device
 adb install -r app/build/outputs/apk/debug/app-debug.apk
+```
 
-Resources
-FolderContentsres/layout/activity_main.xmlHome screen layoutres/layout/puzzle.xmlGame screen layoutres/drawable/tile_shape.xmlRounded tile backgroundres/drawable/tile_empty_shape.xmlEmpty slot backgroundres/drawable/tile_hint_glow.xmlAmber glow for hint empty slotres/drawable/btn_rounded.xmlAction button shaperes/drawable/grid_cell.xmlMini grid preview filled cellres/drawable/grid_cell_empty.xmlMini grid preview empty cellres/values/colors.xmlAll named colors — change colorPrimary to rethemeres/values/strings.xmlAll UI strings
+---
 
-What's Persisted
-All data is stored in SharedPreferences under the key BalloonWalaPrefs:
-KeyWhatbest_time_8_puzzleBest completion time — 8-puzzle (ms)best_time_15_puzzleBest completion time — 15-puzzle (ms)best_moves_8_puzzleFewest moves to solve — 8-puzzlebest_moves_15_puzzleFewest moves to solve — 15-puzzlesound_enabledSound on/off preference
-Best scores are only saved for unassisted wins — using Hint or Solution does not update records.
+## Resources
 
-Future Ideas
+| Folder | Contents |
+|---|---|
+| `res/layout/activity_main.xml` | Home screen layout |
+| `res/layout/puzzle.xml` | Game screen layout |
+| `res/drawable/tile_shape.xml` | Rounded tile background |
+| `res/drawable/tile_empty_shape.xml` | Empty slot background |
+| `res/drawable/tile_hint_glow.xml` | Amber glow for hint empty slot |
+| `res/drawable/btn_rounded.xml` | Action button shape |
+| `res/drawable/grid_cell.xml` | Mini grid preview filled cell |
+| `res/drawable/grid_cell_empty.xml` | Mini grid preview empty cell |
+| `res/values/colors.xml` | All named colors — change `colorPrimary` to retheme |
+| `res/values/strings.xml` | All UI strings |
 
-Settings screen (tile size, animation speed)
-High score leaderboard per mode
-Difficulty selector (shuffle depth control)
-Confetti particle system for the win celebration
-Accessibility support (content descriptions for tiles)
+---
 
+## What's Persisted
 
-Made with ❤️ as a gift for the kids.
+All data is stored in `SharedPreferences` under the key `BalloonWalaPrefs`:
+
+| Key | What |
+|---|---|
+| `best_time_8_puzzle` | Best completion time — 8-puzzle (ms) |
+| `best_time_15_puzzle` | Best completion time — 15-puzzle (ms) |
+| `best_moves_8_puzzle` | Fewest moves to solve — 8-puzzle |
+| `best_moves_15_puzzle` | Fewest moves to solve — 15-puzzle |
+| `sound_enabled` | Sound on/off preference |
+
+Best scores are **only saved for unassisted wins** — using Hint or Solution does not update records.
+
+---
+
+## Future Ideas
+
+- Settings screen (tile size, animation speed)
+- High score leaderboard per mode
+- Difficulty selector (shuffle depth control)
+- Confetti particle system for the win celebration
+- Accessibility support (content descriptions for tiles)
+
+---
+
+*Made with ❤️ as a gift for the kids.*
