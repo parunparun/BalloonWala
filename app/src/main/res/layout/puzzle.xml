@@ -457,6 +457,20 @@
                 android:elevation="3dp"
                 android:onClick="showSolution"/>
         </LinearLayout>
+
+        <!-- ── Hint Arrow Overlay ─────────────────────────
+     Transparent — draws arrow between hint tile and
+     empty slot. clickable=false so touches pass through -->
+        <com.example.balloonwala.views.HintArrowView
+            android:id="@+id/hintArrowView"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:clickable="false"
+            android:focusable="false"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
 
     <!-- ── Celebration Overlay ─────────────────────────── -->

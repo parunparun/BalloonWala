@@ -60,6 +60,10 @@ public class PuzzleActivity extends AppCompatActivity
     private HintHelper hintHelper;
     private SolutionHelper solutionHelper;
 
+    // ── Cached views ──────────────────────────────────────
+    private Button btnHint;
+    private Button btnSolution;
+
     // ── Solver infrastructure ─────────────────────────────
     private final ExecutorService solverExecutor = Executors.newSingleThreadExecutor();
     private final Handler mainHandler    = new Handler(Looper.getMainLooper());
@@ -137,8 +141,11 @@ public class PuzzleActivity extends AppCompatActivity
                  findViewById(R.id.movesCountTextView),
                  findViewById(R.id.undo));
 
+        btnHint     = findViewById(R.id.btnHint);
+        btnSolution = findViewById(R.id.btnSolution);
+
         celebrationHelper = new CelebrationHelper(this);
-        hintHelper        = new HintHelper();
+        hintHelper        = new HintHelper(findViewById(R.id.hintArrowView));
         solutionHelper    = new SolutionHelper();
     }
 
@@ -262,11 +269,18 @@ public class PuzzleActivity extends AppCompatActivity
 
                 if (moves.isEmpty()) return; // already solved or timed out
 
+                // Only mark assisted when hint is actually shown
+                assistedSolve = true;
+
                 int    nextTile   = moves.get(0);
                 Button hintButton = GenericUtils.findButtonForTile(
                         nextTile, buttonManager.getButtonList());
+                Button emptyButton = GenericUtils.findEmptyButton(
+                        buttonManager.getButtonList());
 
-                if (hintButton != null) hintHelper.showHint(hintButton);
+                if (hintButton != null && emptyButton != null) {
+                    hintHelper.showHint(hintButton, emptyButton);
+                }
             });
         });
     }
@@ -327,6 +341,7 @@ public class PuzzleActivity extends AppCompatActivity
         gameTimer.stop();
         GenericUtils.disableButtons(buttonManager.getButtonList());
         soundHelper.playWinFanfare();
+        hintHelper.cancel(); // clear hint arrow and glow before celebration
 
         boolean newBestTime  = gameTimer.checkAndSaveBestTime(columns);
         boolean newBestMoves = gameState.checkAndSaveBestMoves(columns);
@@ -368,9 +383,7 @@ public class PuzzleActivity extends AppCompatActivity
     // ── UI Helpers ────────────────────────────────────────
 
     private void setHintSolutionEnabled(boolean enabled) {
-        Button hint     = findViewById(R.id.btnHint);
-        Button solution = findViewById(R.id.btnSolution);
-        if (hint     != null) hint.setEnabled(enabled);
-        if (solution != null) solution.setEnabled(enabled);
+        if (btnHint     != null) btnHint.setEnabled(enabled);
+        if (btnSolution != null) btnSolution.setEnabled(enabled);
     }
 }

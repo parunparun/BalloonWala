@@ -49,7 +49,10 @@ public class SolutionHelper {
             int           index,
             Runnable      onComplete) {
 
-        if (!playing || index >= moves.size()) {
+        // Stopped externally (e.g. onDestroy) — do NOT call onComplete
+        if (!playing) return;
+
+        if (index >= moves.size()) {
             playing = false;
             if (onComplete != null) onComplete.run();
             return;
