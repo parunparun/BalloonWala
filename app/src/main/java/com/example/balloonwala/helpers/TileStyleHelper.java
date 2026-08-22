@@ -1,25 +1,23 @@
 package com.example.balloonwala.helpers;
 
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.widget.Button;
-import androidx.core.content.ContextCompat;
-import com.example.balloonwala.R;
 import java.util.List;
 
 /**
  * Applies fixed colors to each puzzle tile based on its number.
- * <p>
+ *
  * Each number always maps to the same color so kids can
  * recognise pieces by color as well as by number.
- * <p>
- * Call applyStyle(button) after every:
- *  - Initial tile distribution
- *  - Tile swap
- *  - Undo
+ *
+ * Creates a fresh GradientDrawable per tile — avoids shared
+ * drawable mutation issues that cause all tiles to appear
+ * the same color.
+ *
+ * Call applyStyle(button) after every swap or undo.
+ * Call applyStyleToAll(buttonList) after distributeData().
  */
-
 public class TileStyleHelper {
 
     // Fixed tile colors — index 0 = tile "1", index 1 = tile "2" etc.
@@ -41,7 +39,7 @@ public class TileStyleHelper {
             "#FDCB6E",  // 15 — Amber  (dark text)
     };
 
-    // Pre-parsed int values — avoids Color.parseColor() on every tile tap
+    // Pre-parsed int values — avoids Color.parseColor() on every tap
     private static final int[] TILE_COLOR_INTS;
     static {
         TILE_COLOR_INTS = new int[TILE_COLORS.length];
@@ -50,16 +48,20 @@ public class TileStyleHelper {
         }
     }
 
-    // Dark text color pre-parsed once
-    private static final int DARK_TEXT_COLOR  = Color.parseColor("#333333");
-
     // Tile numbers that need dark text (light colored tiles)
     private static final int[] DARK_TEXT_TILES = { 3, 5, 12, 14, 15 };
+
+    // Pre-parsed dark text color
+    private static final int DARK_TEXT_COLOR  = Color.parseColor("#333333");
+
+    // Corner radius in dp
+    private static final int CORNER_RADIUS_DP = 16;
+
+    // ── Public API ────────────────────────────────────────
 
     /**
      * Applies the correct background color and text color
      * to a tile button based on its current text value.
-     * <p>
      * Empty tiles get a subtle hollow grey appearance.
      */
     public static void applyStyle(Button button) {
@@ -72,51 +74,12 @@ public class TileStyleHelper {
 
         try {
             int number = Integer.parseInt(text);
-            if (number >= 1 && number <= TILE_COLORS.length) {
+            if (number >= 1 && number <= TILE_COLOR_INTS.length) {
                 applyFilledStyle(button, number);
             }
         } catch (NumberFormatException e) {
             applyEmptyStyle(button);
         }
-    }
-
-    private static void applyFilledStyle(Button button, int number) {
-        // Get the tile shape drawable and color it
-        Drawable drawable = ContextCompat.getDrawable(
-                button.getContext(), R.drawable.tile_shape);
-
-        if (drawable != null) {
-            // getConstantState() can return null — guard before calling newDrawable()
-            Drawable.ConstantState constantState = drawable.getConstantState();
-            if (constantState != null) {
-                GradientDrawable tileDrawable =
-                        (GradientDrawable) constantState.newDrawable().mutate();
-                // Use pre-parsed int — no Color.parseColor() on every tap
-                tileDrawable.setColor(TILE_COLOR_INTS[number - 1]);
-                button.setBackground(tileDrawable);
-            }
-        }
-
-        // Apply text color — dark for light tiles, white for dark tiles
-        button.setTextColor(needsDarkText(number)
-            ? DARK_TEXT_COLOR
-            : Color.WHITE);
-    }
-
-    private static void applyEmptyStyle(Button button) {
-        Drawable drawable = ContextCompat.getDrawable(
-                button.getContext(), R.drawable.tile_empty_shape);
-        if (drawable != null) {
-            button.setBackground(drawable);
-        }
-        button.setTextColor(Color.TRANSPARENT);
-    }
-
-    private static boolean needsDarkText(int number) {
-        for (int darkTile : DARK_TEXT_TILES) {
-            if (darkTile == number) return true;
-        }
-        return false;
     }
 
     /**
@@ -129,4 +92,52 @@ public class TileStyleHelper {
         }
     }
 
+    // ── Private Helpers ───────────────────────────────────
+
+    private static void applyFilledStyle(Button button, int number) {
+        android.util.Log.d("TileStyle", "Applying color " +
+                TILE_COLORS[number - 1] + " to tile " + number);
+        // Create a fresh GradientDrawable each time — avoids shared
+        // drawable mutation issues that cause all tiles to show same color
+        GradientDrawable drawable = new GradientDrawable();
+        drawable.setShape(GradientDrawable.RECTANGLE);
+        drawable.setCornerRadius(dpToPx(CORNER_RADIUS_DP, button));
+        drawable.setColor(TILE_COLOR_INTS[number - 1]);
+        // Reset state list animator — prevents Material from overriding background
+        button.setStateListAnimator(null);
+        // FIX: Forces MaterialButtons to accept the custom GradientDrawable background
+        androidx.core.view.ViewCompat.setBackground(button, drawable);
+        // FIX Alternative: Clear material tint properties if they are still overriding colors
+        if (button instanceof com.google.android.material.button.MaterialButton) {
+            ((com.google.android.material.button.MaterialButton) button).setBackgroundTintList(null);
+        }
+        button.setTextColor(needsDarkText(number) ? DARK_TEXT_COLOR : Color.WHITE);
+    }
+
+    private static void applyEmptyStyle(Button button) {
+        GradientDrawable drawable = new GradientDrawable();
+        drawable.setShape(GradientDrawable.RECTANGLE);
+        drawable.setCornerRadius(dpToPx(CORNER_RADIUS_DP, button));
+        drawable.setColor(Color.parseColor("#18000000"));
+        // Reset state list animator — prevents Material from overriding background
+        button.setStateListAnimator(null);
+        // FIX: Forces MaterialButtons to accept the empty background
+        androidx.core.view.ViewCompat.setBackground(button, drawable);
+        if (button instanceof com.google.android.material.button.MaterialButton) {
+            ((com.google.android.material.button.MaterialButton) button).setBackgroundTintList(null);
+        }
+        button.setTextColor(Color.TRANSPARENT);
+    }
+
+    private static boolean needsDarkText(int number) {
+        for (int darkTile : DARK_TEXT_TILES) {
+            if (darkTile == number) return true;
+        }
+        return false;
+    }
+
+    private static float dpToPx(int dp, Button button) {
+        return dp * button.getContext().getResources()
+                .getDisplayMetrics().density;
+    }
 }

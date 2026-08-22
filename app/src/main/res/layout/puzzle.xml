@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -99,6 +101,7 @@
         <!-- ── Puzzle Grid ─────────────────────────────── -->
         <!-- Row 1 -->
         <Button
+            style="@style/TileButton"
             android:id="@+id/buttonCoordinates1_1"
             android:layout_width="75dp"
             android:layout_height="75dp"
@@ -107,7 +110,6 @@
             android:textSize="28sp"
             android:textStyle="bold"
             android:textColor="@android:color/white"
-            android:background="@drawable/tile_shape"
             android:elevation="4dp"
             android:stateListAnimator="@null"
             app:layout_constraintTop_toBottomOf="@+id/statsBar"
@@ -116,6 +118,7 @@
             app:layout_constraintBottom_toTopOf="@+id/buttonCoordinates2_1"/>
 
         <Button
+            style="@style/TileButton"
             android:id="@+id/buttonCoordinates1_2"
             android:layout_width="75dp"
             android:layout_height="75dp"
@@ -123,7 +126,6 @@
             android:textSize="28sp"
             android:textStyle="bold"
             android:textColor="@android:color/white"
-            android:background="@drawable/tile_shape"
             android:elevation="4dp"
             android:stateListAnimator="@null"
             app:layout_constraintTop_toBottomOf="@+id/statsBar"
@@ -132,6 +134,7 @@
             app:layout_constraintBottom_toTopOf="@+id/buttonCoordinates2_2"/>
 
         <Button
+            style="@style/TileButton"
             android:id="@+id/buttonCoordinates1_3"
             android:layout_width="75dp"
             android:layout_height="75dp"
@@ -139,7 +142,6 @@
             android:textSize="28sp"
             android:textStyle="bold"
             android:textColor="@android:color/white"
-            android:background="@drawable/tile_shape"
             android:elevation="4dp"
             android:stateListAnimator="@null"
             app:layout_constraintTop_toBottomOf="@+id/statsBar"
@@ -148,6 +150,7 @@
             app:layout_constraintBottom_toTopOf="@+id/buttonCoordinates2_3"/>
 
         <Button
+            style="@style/TileButton"
             android:id="@+id/buttonCoordinates1_4"
             android:layout_width="75dp"
             android:layout_height="75dp"
@@ -155,7 +158,6 @@
             android:textSize="28sp"
             android:textStyle="bold"
             android:textColor="@android:color/white"
-            android:background="@drawable/tile_shape"
             android:elevation="4dp"
             android:stateListAnimator="@null"
             app:layout_constraintTop_toBottomOf="@+id/statsBar"
@@ -164,6 +166,7 @@
 
         <!-- Row 2 -->
         <Button
+            style="@style/TileButton"
             android:id="@+id/buttonCoordinates2_1"
             android:layout_width="75dp"
             android:layout_height="75dp"
@@ -172,7 +175,6 @@
             android:textSize="28sp"
             android:textStyle="bold"
             android:textColor="@android:color/white"
-            android:background="@drawable/tile_shape"
             android:elevation="4dp"
             android:stateListAnimator="@null"
             app:layout_constraintTop_toBottomOf="@+id/buttonCoordinates1_1"
@@ -181,6 +183,7 @@
             app:layout_constraintBottom_toTopOf="@+id/buttonCoordinates3_1"/>
 
         <Button
+            style="@style/TileButton"
             android:id="@+id/buttonCoordinates2_2"
             android:layout_width="75dp"
             android:layout_height="75dp"
@@ -188,7 +191,6 @@
             android:textSize="28sp"
             android:textStyle="bold"
             android:textColor="@android:color/white"
-            android:background="@drawable/tile_shape"
             android:elevation="4dp"
             android:stateListAnimator="@null"
             app:layout_constraintTop_toBottomOf="@+id/buttonCoordinates1_2"
@@ -197,6 +199,7 @@
             app:layout_constraintBottom_toTopOf="@+id/buttonCoordinates3_2"/>
 
         <Button
+            style="@style/TileButton"
             android:id="@+id/buttonCoordinates2_3"
             android:layout_width="75dp"
             android:layout_height="75dp"
@@ -204,7 +207,6 @@
             android:textSize="28sp"
             android:textStyle="bold"
             android:textColor="@android:color/white"
-            android:background="@drawable/tile_shape"
             android:elevation="4dp"
             android:stateListAnimator="@null"
             app:layout_constraintTop_toBottomOf="@+id/buttonCoordinates1_3"
@@ -213,6 +215,7 @@
             app:layout_constraintBottom_toTopOf="@+id/buttonCoordinates3_3"/>
 
         <Button
+            style="@style/TileButton"
             android:id="@+id/buttonCoordinates2_4"
             android:layout_width="75dp"
             android:layout_height="75dp"
@@ -220,7 +223,6 @@
             android:textSize="28sp"
             android:textStyle="bold"
             android:textColor="@android:color/white"
-            android:background="@drawable/tile_shape"
             android:elevation="4dp"
             android:stateListAnimator="@null"
             app:layout_constraintTop_toBottomOf="@+id/buttonCoordinates1_4"
@@ -229,6 +231,7 @@
 
         <!-- Row 3 -->
         <Button
+            style="@style/TileButton"
             android:id="@+id/buttonCoordinates3_1"
             android:layout_width="75dp"
             android:layout_height="75dp"
@@ -237,7 +240,6 @@
             android:textSize="28sp"
             android:textStyle="bold"
             android:textColor="@android:color/white"
-            android:background="@drawable/tile_shape"
             android:elevation="4dp"
             android:stateListAnimator="@null"
             app:layout_constraintTop_toBottomOf="@+id/buttonCoordinates2_1"
@@ -246,6 +248,7 @@
             app:layout_constraintBottom_toTopOf="@+id/buttonCoordinates4_1"/>
 
         <Button
+            style="@style/TileButton"
             android:id="@+id/buttonCoordinates3_2"
             android:layout_width="75dp"
             android:layout_height="75dp"
@@ -253,7 +256,6 @@
             android:textSize="28sp"
             android:textStyle="bold"
             android:textColor="@android:color/white"
-            android:background="@drawable/tile_shape"
             android:elevation="4dp"
             android:stateListAnimator="@null"
             app:layout_constraintTop_toBottomOf="@+id/buttonCoordinates2_2"
@@ -262,6 +264,7 @@
             app:layout_constraintBottom_toTopOf="@+id/buttonCoordinates4_2"/>
 
         <Button
+            style="@style/TileButton"
             android:id="@+id/buttonCoordinates3_3"
             android:layout_width="75dp"
             android:layout_height="75dp"
@@ -269,7 +272,6 @@
             android:textSize="28sp"
             android:textStyle="bold"
             android:textColor="@android:color/white"
-            android:background="@drawable/tile_shape"
             android:elevation="4dp"
             android:stateListAnimator="@null"
             app:layout_constraintTop_toBottomOf="@+id/buttonCoordinates2_3"
@@ -278,6 +280,7 @@
             app:layout_constraintBottom_toTopOf="@+id/buttonCoordinates4_3"/>
 
         <Button
+            style="@style/TileButton"
             android:id="@+id/buttonCoordinates3_4"
             android:layout_width="75dp"
             android:layout_height="75dp"
@@ -285,7 +288,6 @@
             android:textSize="28sp"
             android:textStyle="bold"
             android:textColor="@android:color/white"
-            android:background="@drawable/tile_shape"
             android:elevation="4dp"
             android:stateListAnimator="@null"
             app:layout_constraintTop_toBottomOf="@+id/buttonCoordinates2_4"
@@ -294,6 +296,7 @@
 
         <!-- Row 4 -->
         <Button
+            style="@style/TileButton"
             android:id="@+id/buttonCoordinates4_1"
             android:layout_width="75dp"
             android:layout_height="75dp"
@@ -302,7 +305,6 @@
             android:textSize="28sp"
             android:textStyle="bold"
             android:textColor="@android:color/white"
-            android:background="@drawable/tile_shape"
             android:elevation="4dp"
             android:stateListAnimator="@null"
             app:layout_constraintTop_toBottomOf="@+id/buttonCoordinates3_1"
@@ -311,6 +313,7 @@
             app:layout_constraintBottom_toTopOf="@+id/actionButtons"/>
 
         <Button
+            style="@style/TileButton"
             android:id="@+id/buttonCoordinates4_2"
             android:layout_width="75dp"
             android:layout_height="75dp"
@@ -318,7 +321,6 @@
             android:textSize="28sp"
             android:textStyle="bold"
             android:textColor="@android:color/white"
-            android:background="@drawable/tile_shape"
             android:elevation="4dp"
             android:stateListAnimator="@null"
             app:layout_constraintTop_toBottomOf="@+id/buttonCoordinates3_2"
@@ -326,6 +328,7 @@
             app:layout_constraintEnd_toStartOf="@+id/buttonCoordinates4_3"/>
 
         <Button
+            style="@style/TileButton"
             android:id="@+id/buttonCoordinates4_3"
             android:layout_width="75dp"
             android:layout_height="75dp"
@@ -333,7 +336,6 @@
             android:textSize="28sp"
             android:textStyle="bold"
             android:textColor="@android:color/white"
-            android:background="@drawable/tile_shape"
             android:elevation="4dp"
             android:stateListAnimator="@null"
             app:layout_constraintTop_toBottomOf="@+id/buttonCoordinates3_3"
@@ -341,6 +343,7 @@
             app:layout_constraintEnd_toStartOf="@+id/buttonCoordinates4_4"/>
 
         <Button
+            style="@style/TileButton"
             android:id="@+id/buttonCoordinates4_4"
             android:layout_width="75dp"
             android:layout_height="75dp"
@@ -348,7 +351,6 @@
             android:textSize="28sp"
             android:textStyle="bold"
             android:textColor="@android:color/white"
-            android:background="@drawable/tile_shape"
             android:elevation="4dp"
             android:stateListAnimator="@null"
             app:layout_constraintTop_toBottomOf="@+id/buttonCoordinates3_4"
@@ -365,36 +367,31 @@
             android:layout_marginBottom="24dp"
             app:layout_constraintTop_toBottomOf="@+id/buttonCoordinates4_1"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent">
+            app:layout_constraintEnd_toEndOf="parent">
 
             <Button
                 android:id="@+id/btnPlayAgain"
                 android:layout_width="100dp"
                 android:layout_height="48dp"
                 android:layout_marginEnd="8dp"
-                android:text="Play Again"
+                android:text="@string/play_again"
                 android:textColor="@android:color/white"
                 android:textSize="12sp"
                 android:textStyle="bold"
-                android:background="@drawable/btn_rounded"
-                android:backgroundTint="@color/colorBtnPlayAgain"
                 android:stateListAnimator="@null"
                 android:elevation="3dp"
                 android:onClick="playAgain"/>
 
             <Button
-                android:id="@+id/undo"
+                android:id="@+id/btnUndo"
                 android:layout_width="100dp"
                 android:layout_height="48dp"
                 android:layout_marginEnd="8dp"
                 android:enabled="false"
-                android:text="Undo"
+                android:text="@string/undo"
                 android:textColor="@color/colorBtnUndoText"
                 android:textSize="12sp"
                 android:textStyle="bold"
-                android:background="@drawable/btn_rounded"
-                android:backgroundTint="@color/colorBtnUndo"
                 android:stateListAnimator="@null"
                 android:elevation="3dp"
                 android:onClick="undo"/>
@@ -403,12 +400,10 @@
                 android:id="@+id/btnMenu"
                 android:layout_width="100dp"
                 android:layout_height="48dp"
-                android:text="Menu"
+                android:text="@string/menu"
                 android:textColor="@android:color/white"
                 android:textSize="12sp"
                 android:textStyle="bold"
-                android:background="@drawable/btn_rounded"
-                android:backgroundTint="@color/colorBtnMenu"
                 android:stateListAnimator="@null"
                 android:elevation="3dp"
                 android:onClick="backToMainActivity"/>
@@ -433,12 +428,10 @@
                 android:layout_width="155dp"
                 android:layout_height="48dp"
                 android:layout_marginEnd="8dp"
-                android:text="💡 Hint"
+                android:text="@string/hint"
                 android:textColor="@android:color/white"
                 android:textSize="12sp"
                 android:textStyle="bold"
-                android:background="@drawable/btn_rounded"
-                android:backgroundTint="@color/colorBtnHint"
                 android:stateListAnimator="@null"
                 android:elevation="3dp"
                 android:onClick="showHint"/>
@@ -447,12 +440,10 @@
                 android:id="@+id/btnSolution"
                 android:layout_width="155dp"
                 android:layout_height="48dp"
-                android:text="🎯 Solution"
+                android:text="@string/solution"
                 android:textColor="@android:color/white"
                 android:textSize="12sp"
                 android:textStyle="bold"
-                android:background="@drawable/btn_rounded"
-                android:backgroundTint="@color/colorBtnSolution"
                 android:stateListAnimator="@null"
                 android:elevation="3dp"
                 android:onClick="showSolution"/>
@@ -511,7 +502,7 @@
                 android:id="@+id/celebrationTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="You did it!"
+                android:text="@string/puzzle_solved"
                 android:textSize="40sp"
                 android:textStyle="bold"
                 android:textColor="?attr/colorPrimary"
@@ -541,12 +532,10 @@
                 android:id="@+id/celebrationPlayAgain"
                 android:layout_width="200dp"
                 android:layout_height="56dp"
-                android:text="Play Again!"
+                android:text="@string/play_again_awesome"
                 android:textColor="@android:color/white"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                android:background="@drawable/btn_rounded"
-                android:backgroundTint="?attr/colorPrimary"
                 android:stateListAnimator="@null"
                 android:elevation="4dp"/>
 

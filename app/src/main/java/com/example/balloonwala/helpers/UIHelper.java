@@ -28,6 +28,13 @@ public class UIHelper {
     private final Button   undoButton;
 
     public UIHelper(
+            Context  context) {
+        this.context = context;
+        this.movesCountTextView = null;
+        this.undoButton = null;
+    }
+
+    public UIHelper(
             Context  context,
             TextView movesCountTextView,
             Button   undoButton) {
@@ -49,6 +56,7 @@ public class UIHelper {
     /** Enables or disables the Undo button. */
     public void setUndoEnabled(boolean enabled) {
         undoButton.setEnabled(enabled);
+        undoButton.setAlpha(enabled ? 1.0f : 0.4f);
     }
 
     // ── Confirm Dialog ────────────────────────────────────
@@ -64,9 +72,9 @@ public class UIHelper {
                 .setTitle(title)
                 .setMessage(messageResId)
                 .setIcon(R.mipmap.balloon_wala_alert)
-                .setPositiveButton(android.R.string.yes,
+                .setPositiveButton(android.R.string.ok,
                         (dialog, which) -> onConfirm.run())
-                .setNegativeButton(android.R.string.no, null)
+                .setNegativeButton(android.R.string.cancel, null)
                 .create();
 
         alertDialog.setOnShowListener(d -> {

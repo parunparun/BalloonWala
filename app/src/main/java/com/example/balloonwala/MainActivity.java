@@ -9,7 +9,9 @@ import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.balloonwala.helpers.ButtonStyleHelper;
 import com.example.balloonwala.helpers.SoundHelper;
+import com.example.balloonwala.helpers.UIHelper;
 
 /**
  * Home screen — puzzle mode selection.
@@ -33,11 +35,12 @@ public class MainActivity extends AppCompatActivity {
 
         soundHelper = ((BalloonWalaApp) getApplication()).getSoundHelper();
         updateSoundToggleButton();
+        styleButtons();
         startBalloonFloat();
     }
 
     private void startBalloonFloat() {
-        View balloon = findViewById(R.id.homeBalloon);
+        View balloon = findViewById(com.example.balloonwala.R.id.homeBalloon);
         ObjectAnimator animator = ObjectAnimator.ofFloat(
                 balloon, "translationY", 0f, -30f);
         animator.setDuration(1500);
@@ -84,8 +87,25 @@ public class MainActivity extends AppCompatActivity {
 
     private void updateSoundToggleButton() {
         Button btn = findViewById(R.id.soundToggleBtn);
-        btn.setText(soundHelper.isSoundEnabled()
-                ? getString(R.string.sound_on)
-                : getString(R.string.sound_off));
+        if (soundHelper.isSoundEnabled()) {
+            btn.setText(getString(R.string.sound_on));
+        } else {
+            btn.setText(getString(R.string.sound_off));
+        }
+    }
+
+    private void styleButtons() {
+        ButtonStyleHelper.styleSoundToggle(findViewById(R.id.soundToggleBtn));
+        ButtonStyleHelper.styleQuit(findViewById(R.id.quitBtn));
+    }
+
+    public void quitApp(View view) {
+        UIHelper uiHelper = new UIHelper(this);
+        uiHelper.showConfirmDialog(
+                getString(R.string.quit_confirm_title),
+                R.string.quit_confirm_message,
+                () -> {
+                    finishAffinity();
+                });
     }
 }

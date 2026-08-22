@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorAccent">#1DD1A1</color>
+    <color name="colorBackground">#FFF9F0</color>
+    <color name="colorBestScore">#FF9F43</color>
+    <color name="colorBtnHint">#FDCB6E</color>
+    <color name="colorBtnMenu">#54A0FF</color>
+    <color name="colorBtnPlayAgain">#1DD1A1</color>
+    <color name="colorBtnSolution">#6C5CE7</color>
+    <color name="colorBtnUndo">#DFE6E9</color>
+    <color name="colorBtnUndoText">#636E72</color>
+    <color name="colorOverlay">#EDFFFFFF</color>
+    <color name="colorPrimary">#FF6B6B</color>
+    <color name="colorPrimaryDark">#E05555</color>
+    <color name="colorStatBox">#33FFFFFF</color>
+    <color name="colorStatLabel">#CCFFFFFF</color>
+    <color name="colorTextSecondary">#666666</color>
+    <string name="app_name">BalloonWala New</string>
+    <string name="back_to_main_menu_confirm_message">Are you sure you want go back to the main menu?</string>
+    <string name="back_to_main_menu_confirm_title">Back to Main Menu?</string>
+    <string name="easy_label">⭐ Easy</string>
+    <string name="eight_puzzle">8 Puzzle</string>
+    <string name="fifteen_puzzle">15 Puzzle</string>
+    <string name="hard_label">🔥 Hard</string>
+    <string name="hint">💡 Hint</string>
+    <string name="in">in</string>
+    <string name="menu">Menu</string>
+    <string name="pick_puzzle">Pick your puzzle!</string>
+    <string name="play_again">Play Again</string>
+    <string name="play_again_awesome">Play Again!</string>
+    <string name="play_again_confirm_message">Are you sure you want to play again?</string>
+    <string name="play_again_confirm_title">Play Again?</string>
+    <string name="puzzle_solved">You did it!</string>
+    <string name="quit">✕ Quit</string>
+    <string name="quit_confirm_message">Are you sure you want to quit?</string>
+    <string name="quit_confirm_title">Quit BalloonWala?</string>
+    <string name="solution">🎯 Solution</string>
+    <string name="solution_confirm_message">The puzzle will be solved automatically. This counts as an assisted solve.</string>
+    <string name="solution_confirm_title">Watch Solution?</string>
+    <string name="solved_with_help">Great try! 🎈</string>
+    <string name="sound_off">🔇 Sound Off</string>
+    <string name="sound_on">🔊 Sound On</string>
+    <string name="splash_content">BalloonWala New</string>
+    <string name="steps">steps</string>
+    <string name="undo">Undo</string>
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light.DarkActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.MaterialComponents.Dark.ActionBar"/>
+    <style name="AppTheme.NoActionBar" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.MaterialComponents.Light"/>
+    <style name="TileButton" parent="Widget.AppCompat.Button">
+        <item name="android:background">@null</item>
+        <item name="android:stateListAnimator">@null</item>
+        <item name="android:backgroundTint">@null</item>
+    </style>
+</resources>

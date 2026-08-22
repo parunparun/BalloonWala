@@ -11,6 +11,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.example.balloonwala.helpers.AnimationHelper;
 import com.example.balloonwala.helpers.ButtonManager;
+import com.example.balloonwala.helpers.ButtonStyleHelper;
 import com.example.balloonwala.helpers.CelebrationHelper;
 import com.example.balloonwala.helpers.GameState;
 import com.example.balloonwala.helpers.GameTimer;
@@ -139,7 +140,7 @@ public class PuzzleActivity extends AppCompatActivity
         uiHelper = new UIHelper(
                 this,
                  findViewById(R.id.movesCountTextView),
-                 findViewById(R.id.undo));
+                 findViewById(R.id.btnUndo));
 
         btnHint     = findViewById(R.id.btnHint);
         btnSolution = findViewById(R.id.btnSolution);
@@ -147,31 +148,33 @@ public class PuzzleActivity extends AppCompatActivity
         celebrationHelper = new CelebrationHelper(this);
         hintHelper        = new HintHelper(findViewById(R.id.hintArrowView));
         solutionHelper    = new SolutionHelper();
+        styleButtons();
     }
 
     // ── New Game ──────────────────────────────────────────
 
     private void startNewGame() {
+        android.util.Log.d("chronometer", "chronometer called");
         // Hide celebration if showing
         if (celebrationHelper.isShowing()) {
             celebrationHelper.hideCelebration();
         }
-
         assistedSolve = false;
-        gameState.reset();
-        gameTimer.start();
-
         GenericUtils.distributeData(columns + 1, buttonManager.getButtonList());
-
         // Apply fixed colors to all tiles after distribution
-        TileStyleHelper.applyStyleToAll(buttonManager.getButtonList());
-
+//        TileStyleHelper.applyStyleToAll(buttonManager.getButtonList());
+        // Post ensures background is set AFTER Material Components
+        // applies its default button styling
+        findViewById(R.id.statsBar).post(() ->
+                TileStyleHelper.applyStyleToAll(buttonManager.getButtonList()));
         uiHelper.updateMovesDisplay(0);
         uiHelper.setUndoEnabled(false);
-
         for (Button b : buttonManager.getButtonList()) {
             b.setEnabled(true);
         }
+        gameState.reset();
+        gameTimer.stop();
+        gameTimer.start();
     }
 
     // ── OnTileClickListener ───────────────────────────────
@@ -222,6 +225,7 @@ public class PuzzleActivity extends AppCompatActivity
                 onPuzzleSolved();
             }
         });
+        hintHelper.cancel();
     }
 
     // ── Undo ──────────────────────────────────────────────
@@ -363,8 +367,8 @@ public class PuzzleActivity extends AppCompatActivity
 
     public void playAgain(View view) {
         uiHelper.showConfirmDialog(
-                getString(R.string.play_again_confirmation),
-                R.string.quit,
+                getString(R.string.play_again_confirm_title),
+                R.string.play_again_confirm_message,
                 this::startNewGame);
     }
 
@@ -372,8 +376,8 @@ public class PuzzleActivity extends AppCompatActivity
 
     public void backToMainActivity(View view) {
         uiHelper.showConfirmDialog(
-                getString(R.string.play_again_confirmation),
-                R.string.quit,
+                getString(R.string.back_to_main_menu_confirm_title),
+                R.string.back_to_main_menu_confirm_message,
                 () -> {
                     gameTimer.stop();
                     startActivity(new Intent(this, MainActivity.class));
@@ -383,7 +387,21 @@ public class PuzzleActivity extends AppCompatActivity
     // ── UI Helpers ────────────────────────────────────────
 
     private void setHintSolutionEnabled(boolean enabled) {
-        if (btnHint     != null) btnHint.setEnabled(enabled);
-        if (btnSolution != null) btnSolution.setEnabled(enabled);
+        if (btnHint     != null) {
+            btnHint.setEnabled(enabled);
+            btnHint.setAlpha(enabled ? 1.0f : 0.4f);
+        }
+        if (btnSolution != null) {
+            btnSolution.setEnabled(enabled);
+            btnSolution.setAlpha(enabled ? 1.0f : 0.4f);
+        }
+    }
+
+    private void styleButtons() {
+        ButtonStyleHelper.stylePlayAgain(findViewById(R.id.btnPlayAgain));
+        ButtonStyleHelper.styleUndo(findViewById(R.id.btnUndo));
+        ButtonStyleHelper.styleMenu(findViewById(R.id.btnMenu));
+        ButtonStyleHelper.styleHint(btnHint);
+        ButtonStyleHelper.styleSolution(btnSolution);
     }
 }

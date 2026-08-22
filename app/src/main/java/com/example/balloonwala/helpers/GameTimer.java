@@ -37,9 +37,12 @@ public class GameTimer {
 
     /** Resets and starts the timer from zero. */
     public void start() {
-        chronometer.setBase(SystemClock.elapsedRealtime());
-        chronometer.start();
         running = true;
+        chronometer.post(() -> {
+                chronometer.setCountDown(false);
+                chronometer.setBase(SystemClock.elapsedRealtime());
+                chronometer.start();
+        });
     }
 
     /** Stops the timer permanently (e.g. puzzle solved). */

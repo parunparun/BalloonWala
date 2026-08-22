@@ -3,19 +3,15 @@ plugins {
 }
 
 android {
-	namespace "com.example.balloonwala"
-    compileSdkVersion 29
+    namespace "com.example.balloonwala"
+    compileSdk 35
 
     defaultConfig {
-        applicationId 'com.example.balloonwala'
-        minSdkVersion 21
-        //noinspection ExpiringTargetSdkVersion,ExpiredTargetSdkVersion
-        targetSdkVersion 29
+        applicationId "com.example.balloonwala.new"
+        minSdk 25
+        targetSdk 35
         versionCode 1
         versionName "1.0"
-        vectorDrawables.useSupportLibrary = true
-
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
@@ -26,19 +22,21 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-
-
-    buildFeatures {
-        buildConfig = false
-    }
-    lint {
-        abortOnError false
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
 }
 
 dependencies {
-    // TODO: dependencies
+    // AndroidX core
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'androidx.coordinatorlayout:coordinatorlayout:1.2.0'
+
+    // Material Design
+    implementation 'com.google.android.material:material:1.11.0'
+
+    // Apache Commons (used in GenericUtils and ButtonManager)
+    implementation 'org.apache.commons:commons-lang3:3.12.0'
+    implementation 'org.apache.commons:commons-collections4:4.4'
 }
