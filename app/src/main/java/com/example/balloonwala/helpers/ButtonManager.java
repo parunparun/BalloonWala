@@ -100,9 +100,14 @@ public class ButtonManager {
      */
     private View.OnTouchListener buildTouchListener() {
         return (view, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                // Return true for ACTION_DOWN to ensure we receive ACTION_UP
+                // and to prevent touches from falling through to the background.
+                return true;
+            }
             if (event.getAction() == MotionEvent.ACTION_UP) {
                 Button tapped = findButtonById(view.getId());
-                if (tapped != null) {
+                if (tapped != null && tapped.getVisibility() == View.VISIBLE) {
                     tileClickListener.onTileClicked(tapped);
                 }
                 return true;
@@ -117,11 +122,15 @@ public class ButtonManager {
      */
     private void registerButton(int id, View.OnTouchListener listener, boolean visible) {
         Button button = activity.findViewById(id);
-        button.setOnTouchListener(listener);
         if (visible) {
+            button.setOnTouchListener(listener);
             buttonList.add(button);
+            button.setVisibility(View.VISIBLE);
+            button.setEnabled(true);
         } else {
+            button.setOnTouchListener(null); // Explicitly remove listener for hidden buttons
             button.setVisibility(View.INVISIBLE);
+            button.setEnabled(false);
         }
     }
 

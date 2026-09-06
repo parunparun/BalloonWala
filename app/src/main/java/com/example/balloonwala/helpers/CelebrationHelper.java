@@ -7,6 +7,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+
+import com.example.balloonwala.BalloonWalaApp;
 import com.example.balloonwala.R;
 import java.util.Random;
 
@@ -35,6 +37,10 @@ public class CelebrationHelper {
     private final TextView      celebrationStats;
     private final TextView      celebrationBest;
     private final Button        celebrationPlayAgain;
+    private final Button        celebrationDismiss;
+    
+    private final SoundHelper   soundHelper;
+    private final SpeechHelper  speechHelper;
 
     private final Handler       handler = new Handler(Looper.getMainLooper());
     private final Random        random  = new Random();
@@ -47,6 +53,12 @@ public class CelebrationHelper {
         this.celebrationStats   = activity.findViewById(R.id.celebrationStats);
         this.celebrationBest    = activity.findViewById(R.id.celebrationBest);
         this.celebrationPlayAgain = activity.findViewById(R.id.celebrationPlayAgain);
+        this.celebrationDismiss   = activity.findViewById(R.id.celebrationDismiss);
+        
+        // Grab SoundHelper from the Application instance
+        BalloonWalaApp app = (BalloonWalaApp) activity.getApplication();
+        this.soundHelper = app.getSoundHelper();
+        this.speechHelper = app.getSpeechHelper();
     }
 
     // ── Show / Hide ───────────────────────────────────────
@@ -56,12 +68,20 @@ public class CelebrationHelper {
      *
      * @param stats      e.g. "31 moves · 2 min 10 sec"
      * @param newBest    true if this is a new best score/time
+     * @param unlockedSticker the sticker unlocked (if any)
      * @param onPlayAgain runs when the player taps Play Again
      */
-    public void showCelebration(String stats, boolean newBest, Runnable onPlayAgain) {
+    public void showCelebration(String stats, boolean newBest, String unlockedSticker, Runnable onPlayAgain) {
         celebrationStats.setText(stats);
 
-        if (newBest) {
+        if (unlockedSticker != null) {
+            if (unlockedSticker.equals("FULL")) {
+                celebrationBest.setText("Collection Complete! 🌟");
+            } else {
+                celebrationBest.setText(activity.getString(R.string.new_sticker_reward, unlockedSticker));
+            }
+            celebrationBest.setVisibility(View.VISIBLE);
+        } else if (newBest) {
             celebrationBest.setText("🏆 New Best!");
             celebrationBest.setVisibility(View.VISIBLE);
         } else {
@@ -69,8 +89,16 @@ public class CelebrationHelper {
         }
 
         celebrationPlayAgain.setOnClickListener(v -> {
+            // Prevent multiple clicks while resetting
+            celebrationPlayAgain.setEnabled(false);
+            speechHelper.stop();
             hideCelebration();
             onPlayAgain.run();
+        });
+
+        celebrationDismiss.setOnClickListener(v -> {
+            speechHelper.stop();
+            hideCelebration();
         });
 
         // Fade the overlay in
@@ -129,6 +157,13 @@ public class CelebrationHelper {
         balloon.setText(emoji);
         balloon.setTextSize(random.nextInt(16) + 24f); // 24–40sp
         balloon.setAlpha(0.9f);
+        
+        // INTERACTIVE: Make balloon poppable
+        balloon.setOnClickListener(v -> {
+            soundHelper.playPop();
+            balloon.animate().cancel(); // Stop floating
+            balloonContainer.removeView(balloon);
+        });
 
         // Random horizontal position
         int containerWidth = balloonContainer.getWidth();

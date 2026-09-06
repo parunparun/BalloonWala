@@ -23,13 +23,13 @@
         <activity
             android:name=".MainActivity"
             android:theme="@style/AppTheme.NoActionBar"
-            android:exported="false"
-            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden|smallestScreenSize" />
+            android:exported="false" />
 
         <activity
             android:name=".PuzzleActivity"
             android:theme="@style/AppTheme.NoActionBar"
             android:exported="false"
+            android:screenOrientation="sensorPortrait"
             android:configChanges="orientation|screenSize|screenLayout|keyboardHidden|smallestScreenSize" />
     </application>
 

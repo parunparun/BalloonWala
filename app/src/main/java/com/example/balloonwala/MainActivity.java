@@ -3,15 +3,28 @@ package com.example.balloonwala;
 import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import android.widget.AbsListView;
+import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.GridView;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.balloonwala.helpers.ButtonStyleHelper;
 import com.example.balloonwala.helpers.SoundHelper;
+import com.example.balloonwala.helpers.SpeechHelper;
+import com.example.balloonwala.helpers.StickerHelper;
 import com.example.balloonwala.helpers.UIHelper;
+
+import java.util.List;
+import java.util.Set;
 
 /**
  * Home screen — puzzle mode selection.
@@ -22,6 +35,8 @@ import com.example.balloonwala.helpers.UIHelper;
 public class MainActivity extends AppCompatActivity {
 
     private SoundHelper soundHelper;
+    private SpeechHelper speechHelper;
+    private StickerHelper stickerHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,13 +49,15 @@ public class MainActivity extends AppCompatActivity {
         }
 
         soundHelper = ((BalloonWalaApp) getApplication()).getSoundHelper();
+        speechHelper = ((BalloonWalaApp) getApplication()).getSpeechHelper();
+        stickerHelper = ((BalloonWalaApp) getApplication()).getStickerHelper();
         updateSoundToggleButton();
         styleButtons();
         startBalloonFloat();
     }
 
     private void startBalloonFloat() {
-        View balloon = findViewById(com.example.balloonwala.R.id.homeBalloon);
+        View balloon = findViewById(R.id.homeBalloon);
         ObjectAnimator animator = ObjectAnimator.ofFloat(
                 balloon, "translationY", 0f, -30f);
         animator.setDuration(1500);
@@ -55,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        Log.d("PuzzleDebug", "onResume called");
         soundHelper.resumeMusic();
     }
 
@@ -95,8 +113,26 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void styleButtons() {
+        ButtonStyleHelper.styleHowToPlay(findViewById(R.id.howToPlayBtn));
         ButtonStyleHelper.styleSoundToggle(findViewById(R.id.soundToggleBtn));
+        ButtonStyleHelper.styleStickerBook(findViewById(R.id.stickerBookBtn));
         ButtonStyleHelper.styleQuit(findViewById(R.id.quitBtn));
+    }
+
+    public void showHowToPlay(View view) {
+        String rules = getString(R.string.how_to_play_rules);
+        speechHelper.speak(rules);
+
+        UIHelper uiHelper = new UIHelper(this);
+        uiHelper.showInfoDialog(
+                getString(R.string.how_to_play_title),
+                R.string.how_to_play_rules,
+                () -> speechHelper.stop()); // STOP speaking when "Got it" is clicked
+    }
+
+    public void showStickerBook(View view) {
+        UIHelper uiHelper = new UIHelper(this);
+        uiHelper.showStickerBook(stickerHelper, () -> speechHelper.stop());
     }
 
     public void quitApp(View view) {

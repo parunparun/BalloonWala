@@ -5,231 +5,269 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorBackground">
-
-    <!-- ── Main Content ───────────────────────────────── -->
-    <LinearLayout
+    
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:gravity="center"
-        android:padding="32dp">
-
-        <!-- Floating Balloon -->
-        <TextView
-            android:id="@+id/homeBalloon"
-            android:layout_width="wrap_content"
+        android:fillViewport="true"
+        android:scrollbars="none">
+        <!-- ── Main Content ───────────────────────────────── -->
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="🎈"
-            android:textSize="80sp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="8dp"/>
+            android:orientation="vertical"
+            android:gravity="center"
+            android:padding="32dp">
 
-        <!-- Title -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/app_name"
-            android:textSize="42sp"
-            android:textStyle="bold"
-            android:textColor="?attr/colorPrimary"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="6dp"/>
+            <!-- Floating Balloon -->
+            <TextView
+                android:id="@+id/homeBalloon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="🎈"
+                android:textSize="80sp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="8dp"/>
 
-        <!-- Subtitle -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/pick_puzzle"
-            android:textSize="18sp"
-            android:textColor="@color/colorTextSecondary"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="36dp"/>
+            <!-- Title -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/app_name"
+                android:textSize="42sp"
+                android:textStyle="bold"
+                android:textColor="?attr/colorPrimary"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="6dp"/>
 
-        <!-- ── 8 Puzzle Card ────────────────────────── -->
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="280dp"
-            android:layout_height="90dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="16dp"
-            android:clickable="true"
-            android:focusable="true"
-            android:onClick="renderEightPuzzle"
-            app:cardBackgroundColor="?attr/colorPrimary"
-            app:cardCornerRadius="20dp"
-            app:cardElevation="4dp"
-            app:rippleColor="@color/colorStatBox">
+            <!-- Subtitle -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/pick_puzzle"
+                android:textSize="18sp"
+                android:textColor="@color/colorTextSecondary"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="36dp"/>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:padding="16dp">
+            <!-- ── 8 Puzzle Card ────────────────────────── -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="280dp"
+                android:layout_height="90dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="16dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:onClick="renderEightPuzzle"
+                app:cardBackgroundColor="?attr/colorPrimary"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="4dp"
+                app:rippleColor="@color/colorStatBox">
 
-                <!-- Mini 3×3 grid preview -->
                 <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:layout_marginEnd="16dp">
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:padding="16dp">
 
-                    <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="horizontal">
-                        <View android:layout_width="12dp" android:layout_height="12dp" android:background="@drawable/grid_cell" android:layout_margin="2dp"/>
-                        <View android:layout_width="12dp" android:layout_height="12dp" android:background="@drawable/grid_cell" android:layout_margin="2dp"/>
-                        <View android:layout_width="12dp" android:layout_height="12dp" android:background="@drawable/grid_cell" android:layout_margin="2dp"/>
-                    </LinearLayout>
-                    <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="horizontal">
-                        <View android:layout_width="12dp" android:layout_height="12dp" android:background="@drawable/grid_cell" android:layout_margin="2dp"/>
-                        <View android:layout_width="12dp" android:layout_height="12dp" android:background="@drawable/grid_cell" android:layout_margin="2dp"/>
-                        <View android:layout_width="12dp" android:layout_height="12dp" android:background="@drawable/grid_cell" android:layout_margin="2dp"/>
-                    </LinearLayout>
-                    <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="horizontal">
-                        <View android:layout_width="12dp" android:layout_height="12dp" android:background="@drawable/grid_cell" android:layout_margin="2dp"/>
-                        <View android:layout_width="12dp" android:layout_height="12dp" android:background="@drawable/grid_cell" android:layout_margin="2dp"/>
-                        <View android:layout_width="12dp" android:layout_height="12dp" android:background="@drawable/grid_cell_empty" android:layout_margin="2dp"/>
-                    </LinearLayout>
-                </LinearLayout>
-
-                <!-- Labels -->
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-
-                    <TextView
+                    <!-- Mini 3×3 grid preview -->
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/easy_label"
-                        android:textSize="22sp"
-                        android:textStyle="bold"
-                        android:textColor="@android:color/white"/>
+                        android:orientation="vertical"
+                        android:layout_marginEnd="16dp">
 
-                    <TextView
-                        android:layout_width="wrap_content"
+                        <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="horizontal">
+                            <View android:layout_width="12dp" android:layout_height="12dp" android:background="@drawable/grid_cell" android:layout_margin="2dp"/>
+                            <View android:layout_width="12dp" android:layout_height="12dp" android:background="@drawable/grid_cell" android:layout_margin="2dp"/>
+                            <View android:layout_width="12dp" android:layout_height="12dp" android:background="@drawable/grid_cell" android:layout_margin="2dp"/>
+                        </LinearLayout>
+                        <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="horizontal">
+                            <View android:layout_width="12dp" android:layout_height="12dp" android:background="@drawable/grid_cell" android:layout_margin="2dp"/>
+                            <View android:layout_width="12dp" android:layout_height="12dp" android:background="@drawable/grid_cell" android:layout_margin="2dp"/>
+                            <View android:layout_width="12dp" android:layout_height="12dp" android:background="@drawable/grid_cell" android:layout_margin="2dp"/>
+                        </LinearLayout>
+                        <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="horizontal">
+                            <View android:layout_width="12dp" android:layout_height="12dp" android:background="@drawable/grid_cell" android:layout_margin="2dp"/>
+                            <View android:layout_width="12dp" android:layout_height="12dp" android:background="@drawable/grid_cell" android:layout_margin="2dp"/>
+                            <View android:layout_width="12dp" android:layout_height="12dp" android:background="@drawable/grid_cell_empty" android:layout_margin="2dp"/>
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <!-- Labels -->
+                    <LinearLayout
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:text="@string/eight_puzzle"
-                        android:textSize="13sp"
-                        android:textColor="@color/colorStatLabel"/>
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/easy_label"
+                            android:textSize="22sp"
+                            android:textStyle="bold"
+                            android:textColor="@android:color/white"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/eight_puzzle"
+                            android:textSize="13sp"
+                            android:textColor="@color/colorStatLabel"/>
+                    </LinearLayout>
                 </LinearLayout>
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
+            </com.google.android.material.card.MaterialCardView>
 
-        <!-- ── 15 Puzzle Card ───────────────────────── -->
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="280dp"
-            android:layout_height="90dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="32dp"
-            android:clickable="true"
-            android:focusable="true"
-            android:onClick="renderFifteenPuzzle"
-            app:cardBackgroundColor="@color/colorBtnMenu"
-            app:cardCornerRadius="20dp"
-            app:cardElevation="4dp"
-            app:rippleColor="@color/colorStatBox">
+            <!-- ── 15 Puzzle Card ───────────────────────── -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="280dp"
+                android:layout_height="90dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="32dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:onClick="renderFifteenPuzzle"
+                app:cardBackgroundColor="@color/colorBtnMenu"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="4dp"
+                app:rippleColor="@color/colorStatBox">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:padding="16dp">
-
-                <!-- Mini 4×4 grid preview -->
                 <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:layout_marginEnd="16dp">
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:padding="16dp">
 
-                    <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="horizontal">
-                        <View android:layout_width="10dp" android:layout_height="10dp" android:background="@drawable/grid_cell" android:layout_margin="2dp"/>
-                        <View android:layout_width="10dp" android:layout_height="10dp" android:background="@drawable/grid_cell" android:layout_margin="2dp"/>
-                        <View android:layout_width="10dp" android:layout_height="10dp" android:background="@drawable/grid_cell" android:layout_margin="2dp"/>
-                        <View android:layout_width="10dp" android:layout_height="10dp" android:background="@drawable/grid_cell" android:layout_margin="2dp"/>
-                    </LinearLayout>
-                    <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="horizontal">
-                        <View android:layout_width="10dp" android:layout_height="10dp" android:background="@drawable/grid_cell" android:layout_margin="2dp"/>
-                        <View android:layout_width="10dp" android:layout_height="10dp" android:background="@drawable/grid_cell" android:layout_margin="2dp"/>
-                        <View android:layout_width="10dp" android:layout_height="10dp" android:background="@drawable/grid_cell" android:layout_margin="2dp"/>
-                        <View android:layout_width="10dp" android:layout_height="10dp" android:background="@drawable/grid_cell" android:layout_margin="2dp"/>
-                    </LinearLayout>
-                    <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="horizontal">
-                        <View android:layout_width="10dp" android:layout_height="10dp" android:background="@drawable/grid_cell" android:layout_margin="2dp"/>
-                        <View android:layout_width="10dp" android:layout_height="10dp" android:background="@drawable/grid_cell" android:layout_margin="2dp"/>
-                        <View android:layout_width="10dp" android:layout_height="10dp" android:background="@drawable/grid_cell" android:layout_margin="2dp"/>
-                        <View android:layout_width="10dp" android:layout_height="10dp" android:background="@drawable/grid_cell" android:layout_margin="2dp"/>
-                    </LinearLayout>
-                    <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="horizontal">
-                        <View android:layout_width="10dp" android:layout_height="10dp" android:background="@drawable/grid_cell" android:layout_margin="2dp"/>
-                        <View android:layout_width="10dp" android:layout_height="10dp" android:background="@drawable/grid_cell" android:layout_margin="2dp"/>
-                        <View android:layout_width="10dp" android:layout_height="10dp" android:background="@drawable/grid_cell" android:layout_margin="2dp"/>
-                        <View android:layout_width="10dp" android:layout_height="10dp" android:background="@drawable/grid_cell_empty" android:layout_margin="2dp"/>
-                    </LinearLayout>
-                </LinearLayout>
-
-                <!-- Labels -->
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-
-                    <TextView
+                    <!-- Mini 4×4 grid preview -->
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/hard_label"
-                        android:textSize="22sp"
-                        android:textStyle="bold"
-                        android:textColor="@android:color/white"/>
+                        android:orientation="vertical"
+                        android:layout_marginEnd="16dp">
 
-                    <TextView
-                        android:layout_width="wrap_content"
+                        <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="horizontal">
+                            <View android:layout_width="10dp" android:layout_height="10dp" android:background="@drawable/grid_cell" android:layout_margin="2dp"/>
+                            <View android:layout_width="10dp" android:layout_height="10dp" android:background="@drawable/grid_cell" android:layout_margin="2dp"/>
+                            <View android:layout_width="10dp" android:layout_height="10dp" android:background="@drawable/grid_cell" android:layout_margin="2dp"/>
+                            <View android:layout_width="10dp" android:layout_height="10dp" android:background="@drawable/grid_cell" android:layout_margin="2dp"/>
+                        </LinearLayout>
+                        <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="horizontal">
+                            <View android:layout_width="10dp" android:layout_height="10dp" android:background="@drawable/grid_cell" android:layout_margin="2dp"/>
+                            <View android:layout_width="10dp" android:layout_height="10dp" android:background="@drawable/grid_cell" android:layout_margin="2dp"/>
+                            <View android:layout_width="10dp" android:layout_height="10dp" android:background="@drawable/grid_cell" android:layout_margin="2dp"/>
+                            <View android:layout_width="10dp" android:layout_height="10dp" android:background="@drawable/grid_cell" android:layout_margin="2dp"/>
+                        </LinearLayout>
+                        <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="horizontal">
+                            <View android:layout_width="10dp" android:layout_height="10dp" android:background="@drawable/grid_cell" android:layout_margin="2dp"/>
+                            <View android:layout_width="10dp" android:layout_height="10dp" android:background="@drawable/grid_cell" android:layout_margin="2dp"/>
+                            <View android:layout_width="10dp" android:layout_height="10dp" android:background="@drawable/grid_cell" android:layout_margin="2dp"/>
+                            <View android:layout_width="10dp" android:layout_height="10dp" android:background="@drawable/grid_cell" android:layout_margin="2dp"/>
+                        </LinearLayout>
+                        <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="horizontal">
+                            <View android:layout_width="10dp" android:layout_height="10dp" android:background="@drawable/grid_cell" android:layout_margin="2dp"/>
+                            <View android:layout_width="10dp" android:layout_height="10dp" android:background="@drawable/grid_cell" android:layout_margin="2dp"/>
+                            <View android:layout_width="10dp" android:layout_height="10dp" android:background="@drawable/grid_cell" android:layout_margin="2dp"/>
+                            <View android:layout_width="10dp" android:layout_height="10dp" android:background="@drawable/grid_cell_empty" android:layout_margin="2dp"/>
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <!-- Labels -->
+                    <LinearLayout
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:text="@string/fifteen_puzzle"
-                        android:textSize="13sp"
-                        android:textColor="@color/colorStatLabel"/>
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/hard_label"
+                            android:textSize="22sp"
+                            android:textStyle="bold"
+                            android:textColor="@android:color/white"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/fifteen_puzzle"
+                            android:textSize="13sp"
+                            android:textColor="@color/colorStatLabel"/>
+                    </LinearLayout>
                 </LinearLayout>
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
+            </com.google.android.material.card.MaterialCardView>
 
-        <!-- Decorative emojis -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="🎉 ⭐ 🎊"
-            android:textSize="22sp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="16dp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="🎉 ⭐ 🎊"
+                android:textSize="22sp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="16dp"/>
 
-        <!-- Sound Toggle -->
-        <Button
-            android:id="@+id/soundToggleBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="48dp"
-            android:layout_gravity="center_horizontal"
-            android:paddingStart="24dp"
-            android:paddingEnd="24dp"
-            android:text="@string/sound_on"
-            android:textSize="13sp"
-            android:textStyle="bold"
-            android:textColor="@color/colorTextSecondary"
-            android:stateListAnimator="@null"
-            android:onClick="toggleSound"/>
+            <!-- How to Play -->
+            <Button
+                android:id="@+id/howToPlayBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="12dp"
+                android:paddingStart="24dp"
+                android:paddingEnd="24dp"
+                android:text="@string/how_to_play"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:textColor="@color/colorTextSecondary"
+                android:stateListAnimator="@null"
+                android:onClick="showHowToPlay"/>
 
-        <!-- Quit Button -->
-        <Button
-            android:id="@+id/quitBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="48dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="8dp"
-            android:paddingStart="24dp"
-            android:paddingEnd="24dp"
-            android:stateListAnimator="@null"
-            android:text="@string/quit"
-            android:onClick="quitApp"/>
+            <!-- Sound Toggle -->
+            <Button
+                android:id="@+id/soundToggleBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="12dp"
+                android:paddingStart="24dp"
+                android:paddingEnd="24dp"
+                android:text="@string/sound_on"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:textColor="@color/colorTextSecondary"
+                android:stateListAnimator="@null"
+                android:onClick="toggleSound"/>
 
-    </LinearLayout>
+            <!-- Sticker Book -->
+            <Button
+                android:id="@+id/stickerBookBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="12dp"
+                android:paddingStart="24dp"
+                android:paddingEnd="24dp"
+                android:text="@string/sticker_book"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:textColor="@color/colorTextSecondary"
+                android:stateListAnimator="@null"
+                android:onClick="showStickerBook"/>
+
+            <!-- Quit Button -->
+            <Button
+                android:id="@+id/quitBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="8dp"
+                android:paddingStart="24dp"
+                android:paddingEnd="24dp"
+                android:stateListAnimator="@null"
+                android:text="@string/quit"
+                android:onClick="quitApp"/>
+
+        </LinearLayout>
+    </ScrollView>
 </FrameLayout>

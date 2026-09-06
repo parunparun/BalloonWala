@@ -3,13 +3,13 @@ package com.example.balloonwala;
 import android.app.Application;
 
 import com.example.balloonwala.helpers.SoundHelper;
+import com.example.balloonwala.helpers.SpeechHelper;
+import com.example.balloonwala.helpers.StickerHelper;
 
 /**
  * Application class — lives for the entire app lifetime.
  * <p>
- * Holds a single SoundHelper instance so background music
- * continues seamlessly between MainActivity and PuzzleActivity
- * without restarting or duplicating players.
+ * Holds single instances of helpers so they persist across activities.
  * <p>
  * ⚠️ Important: Add android:name=".BalloonWalaApp" to the
  * <application> tag in AndroidManifest.xml
@@ -17,26 +17,37 @@ import com.example.balloonwala.helpers.SoundHelper;
 public class BalloonWalaApp extends Application {
 
     private SoundHelper soundHelper;
+    private SpeechHelper speechHelper;
+    private StickerHelper stickerHelper;
 
     @Override
     public void onCreate() {
         super.onCreate();
         soundHelper = new SoundHelper(this);
+        speechHelper = new SpeechHelper(this);
+        stickerHelper = new StickerHelper(this);
     }
 
     public SoundHelper getSoundHelper() {
         return soundHelper;
     }
 
-    // Note: onTerminate() is NOT overridden here.
-    // Android never calls onTerminate() on real devices — only on emulators.
-    // When the app process is killed, the OS reclaims all resources automatically.
-    // SoundHelper.release() is therefore not needed here.
+    public SpeechHelper getSpeechHelper() {
+        return speechHelper;
+    }
+
+    public StickerHelper getStickerHelper() {
+        return stickerHelper;
+    }
+
     @Override
     public void onTerminate() {
         super.onTerminate();
         if (soundHelper != null) {
             soundHelper.release();
+        }
+        if (speechHelper != null) {
+            speechHelper.shutdown();
         }
     }
 }

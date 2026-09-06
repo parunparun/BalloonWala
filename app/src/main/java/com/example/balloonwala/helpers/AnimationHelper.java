@@ -1,6 +1,6 @@
 package com.example.balloonwala.helpers;
 
-import android.view.animation.DecelerateInterpolator;
+import android.view.animation.OvershootInterpolator;
 import android.widget.Button;
 
 /**
@@ -14,7 +14,7 @@ import android.widget.Button;
  */
 public class AnimationHelper {
 
-    private static final long SLIDE_DURATION_MS = 120;
+    private static final long SLIDE_DURATION_MS = 200;
 
     private static volatile boolean animating = false;
 
@@ -47,7 +47,7 @@ public class AnimationHelper {
                 .translationX(dx)
                 .translationY(dy)
                 .setDuration(SLIDE_DURATION_MS)
-                .setInterpolator(new DecelerateInterpolator())
+                .setInterpolator(new OvershootInterpolator(1.0f))
                 .withEndAction(() -> {
                     // Reset visual position — text will be swapped by caller
                     from.setTranslationX(0f);

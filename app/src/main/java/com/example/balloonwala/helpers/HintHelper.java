@@ -48,7 +48,9 @@ public class HintHelper {
      * @param emptyButton the adjacent empty slot to slide into
      */
     public void showHint(Button tileButton, Button emptyButton) {
+        android.util.Log.d("hinthelper", "showHint called here first");
         cancelCurrent();
+        android.util.Log.d("hinthelper", "showHint called here second");
 
         // 1 — Pulse the hint tile
         pulseTile(tileButton);

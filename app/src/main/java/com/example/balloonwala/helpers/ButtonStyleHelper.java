@@ -4,6 +4,10 @@ import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.widget.Button;
 
+import androidx.core.view.ViewCompat;
+
+import com.google.android.material.button.MaterialButton;
+
 /**
  * Sets action button colors programmatically.
  *
@@ -34,6 +38,14 @@ public class ButtonStyleHelper {
 
     public static void styleSoundToggle(Button button) {
         applyStyle(button, COLOR_SOUND_TOGGLE, COLOR_SOUND_TOGGLE_TEXT);
+    }
+
+    public static void styleHowToPlay(Button button) {
+        applyStyle(button, COLOR_SOUND_TOGGLE, COLOR_SOUND_TOGGLE_TEXT);
+    }
+
+    public static void styleStickerBook(Button button) {
+        applyStyle(button, COLOR_SOLUTION, Color.WHITE);
     }
 
     public static void styleQuit(Button button) {
@@ -73,10 +85,10 @@ public class ButtonStyleHelper {
         // Reset state list animator — prevents Material from overriding background
         button.setStateListAnimator(null);
         // FIX: Forces MaterialButtons to accept the custom GradientDrawable background
-        androidx.core.view.ViewCompat.setBackground(button, drawable);
+        ViewCompat.setBackground(button, drawable);
         // FIX Alternative: Clear material tint properties if they are still overriding colors
-        if (button instanceof com.google.android.material.button.MaterialButton) {
-            ((com.google.android.material.button.MaterialButton) button).setBackgroundTintList(null);
+        if (button instanceof MaterialButton) {
+            ((MaterialButton) button).setBackgroundTintList(null);
         }
         button.setTextColor(textColor);
     }

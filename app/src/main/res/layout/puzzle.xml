@@ -409,7 +409,7 @@
                 android:onClick="backToMainActivity"/>
 
         </LinearLayout>
-        <!-- ── Action Buttons Row 2: Hint | Solution ────── -->
+        <!-- ── Action Buttons Row 2: Help | Hint | Solution | Stickers ── -->
         <LinearLayout
             android:id="@+id/hintSolutionButtons"
             android:layout_width="wrap_content"
@@ -424,13 +424,26 @@
             app:layout_constraintBottom_toBottomOf="parent">
 
             <Button
+                android:id="@+id/btnHelp"
+                android:layout_width="85dp"
+                android:layout_height="48dp"
+                android:layout_marginEnd="8dp"
+                android:text="@string/how_to_play"
+                android:textColor="@android:color/white"
+                android:textSize="9sp"
+                android:textStyle="bold"
+                android:stateListAnimator="@null"
+                android:elevation="3dp"
+                android:onClick="showHowToPlay"/>
+
+            <Button
                 android:id="@+id/btnHint"
-                android:layout_width="155dp"
+                android:layout_width="85dp"
                 android:layout_height="48dp"
                 android:layout_marginEnd="8dp"
                 android:text="@string/hint"
                 android:textColor="@android:color/white"
-                android:textSize="12sp"
+                android:textSize="9sp"
                 android:textStyle="bold"
                 android:stateListAnimator="@null"
                 android:elevation="3dp"
@@ -438,15 +451,28 @@
 
             <Button
                 android:id="@+id/btnSolution"
-                android:layout_width="155dp"
+                android:layout_width="85dp"
                 android:layout_height="48dp"
+                android:layout_marginEnd="8dp"
                 android:text="@string/solution"
                 android:textColor="@android:color/white"
-                android:textSize="12sp"
+                android:textSize="9sp"
                 android:textStyle="bold"
                 android:stateListAnimator="@null"
                 android:elevation="3dp"
                 android:onClick="showSolution"/>
+
+            <Button
+                android:id="@+id/btnStickers"
+                android:layout_width="85dp"
+                android:layout_height="48dp"
+                android:text="@string/sticker_book"
+                android:textColor="@android:color/white"
+                android:textSize="9sp"
+                android:textStyle="bold"
+                android:stateListAnimator="@null"
+                android:elevation="3dp"
+                android:onClick="showStickerBook"/>
         </LinearLayout>
 
         <!-- ── Hint Arrow Overlay ─────────────────────────
@@ -528,16 +554,36 @@
                 android:visibility="gone"
                 android:layout_marginBottom="24dp"/>
 
-            <Button
-                android:id="@+id/celebrationPlayAgain"
-                android:layout_width="200dp"
-                android:layout_height="56dp"
-                android:text="@string/play_again_awesome"
-                android:textColor="@android:color/white"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:stateListAnimator="@null"
-                android:elevation="4dp"/>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="24dp">
+
+                <Button
+                    android:id="@+id/celebrationPlayAgain"
+                    android:layout_width="160dp"
+                    android:layout_height="56dp"
+                    android:layout_marginEnd="8dp"
+                    android:text="@string/play_again_awesome"
+                    android:textColor="@android:color/white"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:stateListAnimator="@null"
+                    android:elevation="4dp"/>
+
+                <Button
+                    android:id="@+id/celebrationDismiss"
+                    android:layout_width="160dp"
+                    android:layout_height="56dp"
+                    android:text="@string/view_board"
+                    android:textColor="@android:color/white"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:backgroundTint="@color/colorBtnUndoText"
+                    android:stateListAnimator="@null"
+                    android:elevation="4dp"/>
+            </LinearLayout>
 
         </LinearLayout>
     </FrameLayout>

@@ -65,6 +65,8 @@ public class TileStyleHelper {
      * Empty tiles get a subtle hollow grey appearance.
      */
     public static void applyStyle(Button button) {
+        if (button == null) return;
+        
         String text = button.getText().toString().trim();
 
         if (text.isEmpty()) {
@@ -76,8 +78,13 @@ public class TileStyleHelper {
             int number = Integer.parseInt(text);
             if (number >= 1 && number <= TILE_COLOR_INTS.length) {
                 applyFilledStyle(button, number);
+            } else {
+                // Out of range? Make it look empty but keep text visible for debugging
+                applyEmptyStyle(button);
+                button.setTextColor(Color.BLACK);
             }
         } catch (NumberFormatException e) {
+            // Text is not a number? Make it look empty.
             applyEmptyStyle(button);
         }
     }

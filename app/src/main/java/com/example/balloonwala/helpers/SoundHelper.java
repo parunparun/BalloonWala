@@ -54,7 +54,7 @@ public class SoundHelper {
             backgroundPlayer = MediaPlayer.create(context, resId);
             if (backgroundPlayer != null) {
                 backgroundPlayer.setLooping(true);
-                backgroundPlayer.setVolume(0.25f, 0.25f); // soft background level
+                backgroundPlayer.setVolume(0.08f, 0.08f); // soft background level
             }
         } catch (Exception e) {
             backgroundPlayer = null;
@@ -85,7 +85,17 @@ public class SoundHelper {
     public void playTileTap() {
         if (!isSoundEnabled()) return;
         executor.execute(() -> playBuffer(
-                generateSineWave(700, 60, 0.5f)));
+                generateSineWave(700, 60, 0.8f)));
+    }
+
+    /**
+     * Plays a satisfying "pop" sound — slightly higher pitch and shorter
+     * than the tile tap.
+     */
+    public void playPop() {
+        if (!isSoundEnabled()) return;
+        executor.execute(() -> playBuffer(
+                generateSineWave(900, 40, 0.9f)));
     }
 
     // ── Win Fanfare ───────────────────────────────────────

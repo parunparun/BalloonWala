@@ -47,6 +47,10 @@ public class GameState {
         moveHistory.clear();
     }
 
+    public void setStepsCount(int steps) {
+        this.stepsCount = steps;
+    }
+
     // ── Moves ─────────────────────────────────────────────
 
     /** Records a new move and increments the step counter. */

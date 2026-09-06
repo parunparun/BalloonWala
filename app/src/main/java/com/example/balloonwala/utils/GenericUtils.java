@@ -51,17 +51,17 @@ public class GenericUtils {
     public static void distributeData(int maximum, List<Button> buttonList) {
         int size = buttonList.size();
 
-        // Generate a solvable shuffled list of numbers
-        List<Integer> numbers = generateSolvableNumbers(size, maximum - 1);
+        // Generate a solvable shuffled list of numbers (0 is blank)
+        List<Integer> numbers = generateSolvableNumbers(size);
 
-        // BUG FIX 3: Assign numbers to buttons using a loop instead of a switch
+        // Assign numbers to buttons
         for (int i = 0; i < size; i++) {
-            setData(numbers.get(i), buttonList.get(i), maximum - 1);
+            setData(numbers.get(i), buttonList.get(i));
         }
     }
 
-    private static void setData(int number, Button currentButton, int limit) {
-        currentButton.setText(number == limit ? "" : String.valueOf(number));
+    private static void setData(int number, Button currentButton) {
+        currentButton.setText(number == 0 ? "" : String.valueOf(number));
         currentButton.setEnabled(true);
     }
 
@@ -69,16 +69,16 @@ public class GenericUtils {
 
     /**
      * Generates a shuffled number arrangement guaranteed to be solvable.
-     * Keeps reshuffling until the solvability check passes.
+     * 0 represents the blank tile.
      */
-    private static List<Integer> generateSolvableNumbers(int size, int limit) {
+    private static List<Integer> generateSolvableNumbers(int size) {
         List<Integer> numbers = new ArrayList<>();
 
-        // Build list: 1 to (size-1), then limit as the blank tile marker
+        // Build list: 1 to (size-1), then 0 as the blank tile marker
         for (int i = 1; i < size; i++) {
             numbers.add(i);
         }
-        numbers.add(limit); // blank tile
+        numbers.add(0); // blank tile
 
         // Keep shuffling until we get a solvable arrangement
         do {
@@ -105,7 +105,7 @@ public class GenericUtils {
             return inversions % 2 == 0;
         } else {
             // Even grid (4x4): find row of blank tile from bottom
-            int blankIndex = numbers.indexOf(size - 1);
+            int blankIndex = numbers.indexOf(0);
             int blankRowFromBottom = gridWidth - (blankIndex / gridWidth);
             return (inversions + blankRowFromBottom) % 2 != 0;
         }
@@ -114,11 +114,11 @@ public class GenericUtils {
     private static int countInversions(List<Integer> numbers, int size) {
         int inversions = 0;
         for (int i = 0; i < size - 1; i++) {
+            int num1 = numbers.get(i);
+            if (num1 == 0) continue;
             for (int j = i + 1; j < size; j++) {
-                // Blank tile (represented by limit value) doesn't count
-                if (numbers.get(i) != size - 1
-                        && numbers.get(j) != size - 1
-                        && numbers.get(i) > numbers.get(j)) {
+                int num2 = numbers.get(j);
+                if (num2 != 0 && num1 > num2) {
                     inversions++;
                 }
             }
@@ -135,19 +135,14 @@ public class GenericUtils {
      * @param buttonList the full ordered list of tile buttons
      */
     public static boolean solved(int limit, List<Button> buttonList) {
-        String startValue = "0";
-        for (Button button : buttonList) {
-            int startValueInt = Integer.parseInt(startValue) + 1;
-            if (startValueInt == limit) {
-                startValue = "";
-            } else {
-                startValue = String.valueOf(startValueInt);
-            }
-            if (!button.getText().toString().equalsIgnoreCase(startValue)) {
+        for (int i = 0; i < limit - 1; i++) {
+            String text = buttonList.get(i).getText().toString();
+            if (text.isEmpty() || Integer.parseInt(text) != i + 1) {
                 return false;
             }
         }
-        return true;
+        // Last button must be empty
+        return buttonList.get(limit - 1).getText().toString().isEmpty();
     }
 
     // ── Button State ──────────────────────────────────────
@@ -169,7 +164,16 @@ public class GenericUtils {
         int[] board = new int[buttonList.size()];
         for (int i = 0; i < buttonList.size(); i++) {
             String text = buttonList.get(i).getText().toString().trim();
-            board[i] = text.isEmpty() ? 0 : Integer.parseInt(text);
+            if (text.isEmpty()) {
+                board[i] = 0;
+            } else {
+                try {
+                    board[i] = Integer.parseInt(text);
+                } catch (NumberFormatException e) {
+                    // Fallback for safety - treats malformed text as empty slot
+                    board[i] = 0;
+                }
+            }
         }
         return board;
     }

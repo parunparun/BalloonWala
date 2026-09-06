@@ -15,10 +15,16 @@
     <string name="hard_label">🔥 Hard</string>
     <string name="sound_on">🔊 Sound On</string>
     <string name="sound_off">🔇 Sound Off</string>
+    <string name="sticker_book">🎁 Sticker Book</string>
+    <string name="how_to_play">❓ How to Play</string>
+    <string name="how_to_play_title">How to Play 🎈</string>
+    <string name="how_to_play_rules">1. Put the numbers in order from 1 to 8 (or 15).\n\n2. Tap a tile next to the empty space to slide it.\n\n3. The empty space belongs at the bottom right!\n\n4. Use the 💡 Hint button if you get stuck! 🎈</string>
+    <string name="how_to_play_got_it">Got it!</string>
 
     <!-- Game screen buttons -->
     <string name="play_again">Play Again</string>
     <string name="play_again_awesome">Play Again!</string>
+    <string name="view_board">View Board</string>
     <string name="undo">Undo</string>
     <string name="menu">Menu</string>
     <string name="hint">💡 Hint</string>
@@ -38,6 +44,7 @@
     <!-- Win messages -->
     <string name="puzzle_solved">You did it!</string>
     <string name="solved_with_help">Great try! 🎈</string>
+    <string name="new_sticker_reward">🎁 New Sticker: %1$s</string>
     <string name="in">in</string>
     <string name="steps">steps</string>
 

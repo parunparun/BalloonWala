@@ -3,12 +3,22 @@ package com.example.balloonwala.helpers;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.view.View;
+import android.view.LayoutInflater;
+import android.view.ViewGroup;
+import android.widget.AbsListView;
+import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.GridView;
 import android.widget.TextView;
+import android.view.Gravity;
 
 import androidx.core.content.ContextCompat;
 
 import com.example.balloonwala.R;
+
+import java.util.List;
+import java.util.Set;
 
 /**
  * Manages all UI updates for the puzzle screen.
@@ -87,5 +97,98 @@ public class UIHelper {
         });
 
         alertDialog.show();
+    }
+
+    /**
+     * Shows a dialog with a custom View.
+     */
+    public void showCustomDialog(String title, View customView, Runnable onDismiss) {
+        new AlertDialog.Builder(context)
+                .setTitle(title)
+                .setView(customView)
+                .setIcon(R.mipmap.balloon_wala_alert)
+                .setPositiveButton(R.string.how_to_play_got_it, null)
+                .setOnDismissListener(dialog -> {
+                    if (onDismiss != null) onDismiss.run();
+                })
+                .show();
+    }
+
+    /**
+     * Shows a simple info dialog with a single "Got it!" button.
+     * Used for the "How to Play" screen.
+     */
+    public void showInfoDialog(String title, int messageResId, Runnable onDismiss) {
+        new AlertDialog.Builder(context)
+                .setTitle(title)
+                .setMessage(messageResId)
+                .setIcon(R.mipmap.balloon_wala_alert)
+                .setPositiveButton(R.string.how_to_play_got_it, null)
+                .setOnDismissListener(dialog -> {
+                    if (onDismiss != null) onDismiss.run();
+                })
+                .show();
+    }
+
+    /**
+     * Shows a simple info dialog with a custom message string.
+     */
+    public void showInfoDialog(String title, String message, Runnable onDismiss) {
+        new AlertDialog.Builder(context)
+                .setTitle(title)
+                .setMessage(message)
+                .setIcon(R.mipmap.balloon_wala_alert)
+                .setPositiveButton(R.string.how_to_play_got_it, null)
+                .setOnDismissListener(dialog -> {
+                    if (onDismiss != null) onDismiss.run();
+                })
+                .show();
+    }
+
+    /**
+     * Shows the Sticker Book gallery.
+     */
+    public void showStickerBook(StickerHelper stickerHelper, Runnable onDismiss) {
+        Set<String> unlocked = stickerHelper.getUnlockedStickers();
+        List<String> all = stickerHelper.getAllStickers();
+
+        View dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_sticker_book, null);
+        GridView gridView = dialogView.findViewById(R.id.stickerGridView);
+
+        gridView.setAdapter(new BaseAdapter() {
+            @Override
+            public int getCount() { return all.size(); }
+            @Override
+            public Object getItem(int position) { return all.get(position); }
+            @Override
+            public long getItemId(int position) { return position; }
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                TextView tv = (TextView) convertView;
+                if (tv == null) {
+                    tv = new TextView(context);
+                    tv.setLayoutParams(new GridView.LayoutParams(
+                            ViewGroup.LayoutParams.MATCH_PARENT, 120));
+                    tv.setGravity(Gravity.CENTER);
+                    tv.setTextSize(32);
+                }
+
+                String sticker = all.get(position);
+                if (unlocked.contains(sticker)) {
+                    tv.setText(sticker);
+                    tv.setAlpha(1.0f);
+                } else {
+                    tv.setText("❓");
+                    tv.setAlpha(0.2f);
+                }
+                return tv;
+            }
+        });
+
+        showCustomDialog(
+                context.getString(R.string.sticker_book) + " (" + unlocked.size() + "/" + all.size() + ")",
+                dialogView,
+                onDismiss
+        );
     }
 }
