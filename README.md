@@ -15,6 +15,17 @@ Slide the numbered tiles into the correct order to win — then enjoy the balloo
 - Live move counter and timer during play
 - Undo — step back through your moves one at a time
 - Best score and best time saved between sessions
+- **State Persistence** — survived screen rotations and app backgrounding without losing progress
+
+**Interactive Rewards (New! 🎁)**
+- **Sticker Book** — Earn over 80 unique animal and space emojis!
+- **Pick Your Prize** — Solve a puzzle without hints to choose 1 of 3 new stickers for your collection.
+- **Interactive Celebration** — Tap the floating victory balloons to pop them with a satisfying sound!
+
+**Kid-Friendly Accessibility**
+- **Voice Guidance** — App reads "How to Play" rules and win messages aloud (Text-to-Speech).
+- **Haptic Feedback** — Subtle tactile vibration ("tick") on every tile move for a physical feel.
+- **How to Play** — Dedicated in-game guide with clear, simple instructions for kids.
 
 **Hint System**
 - 💡 Hint button — solver finds the optimal next move and shows it with:
@@ -23,22 +34,11 @@ Slide the numbered tiles into the correct order to win — then enjoy the balloo
   - A custom-drawn canvas arrow from tile center to empty slot center
 - 🎯 Solution button — watch the full optimal solution auto-played step by step
 
-**Celebration**
-- Balloon shower animation when the puzzle is solved
-- Win fanfare generated programmatically (no audio files needed)
-- "New Best!" indicator when a personal record is broken
-- Assisted solve tracked separately — best scores only recorded for unassisted wins
-
 **Sound**
-- Tile tap sound on every move (programmatic sine wave)
+- Tile tap and Balloon "Pop" sounds (programmatic sine waves)
 - Win fanfare melody — C–E–G–C ascending notes
 - Optional background music (add `res/raw/background_music.ogg`)
 - Sound on/off toggle on the home screen, persisted between sessions
-
-**Home Screen**
-- Animated floating balloon
-- Mini grid preview on each puzzle button so kids understand the difficulty at a glance
-- No toolbar — full-screen, kid-friendly layout
 
 ---
 
@@ -49,33 +49,32 @@ com.example.balloonwala/
 │
 ├── AppConstants.java          Puzzle mode sizes + SharedPreferences name
 ├── NavigationConstants.java   Intent extra keys for screen navigation
-├── BalloonWalaApp.java        Application class — SoundHelper singleton
+├── BalloonWalaApp.java        Application singleton — Helper lifecycle management
 │
-├── MainActivity.java          Home screen — mode selection + sound toggle
+├── MainActivity.java          Home screen — mode selection + Sticker Book
 ├── SplashActivity.java        2-second splash screen
-├── PuzzleActivity.java        Game screen — orchestrates all helpers
+├── PuzzleActivity.java        Game screen — orchestrates gameplay + state restoration
 │
 ├── helpers/
-│   ├── AnimationHelper.java   120ms smooth tile slide with double-tap guard
-│   ├── ButtonManager.java     All 16 tile buttons setup and lookup
-│   ├── CelebrationHelper.java Balloon shower + win overlay
+│   ├── AnimationHelper.java   Smooth tile slide animations
+│   ├── ButtonManager.java     Tile button registry and touch handling
+│   ├── ButtonStyleHelper.java Programmatic Material button styling
+│   ├── CelebrationHelper.java Interactive balloon shower + win overlay
 │   ├── GameState.java         Move counter + undo stack (ArrayDeque)
-│   ├── GameTimer.java         Chronometer wrapper — excludes background time
+│   ├── GameTimer.java         Chronometer wrapper — survives rotations
 │   ├── HintHelper.java        Pulse + glow + canvas arrow hint
 │   ├── SolutionHelper.java    Auto-plays solution step by step
-│   ├── SoundHelper.java       Sine-wave sounds + optional background music
+│   ├── SoundHelper.java       Sine-wave sounds + cached PCM buffers
+│   ├── SpeechHelper.java      Text-to-Speech management
+│   ├── StickerHelper.java     Reward system + sticker persistence
 │   ├── TileStyleHelper.java   Fixed color per tile number (pre-parsed)
-│   └── UIHelper.java          Move display + confirmation dialogs
-│
-├── model/
-│   └── Move.java              Single player move (from/to buttons)
+│   └── UIHelper.java          Moves display + common dialogs
 │
 ├── solver/
-│   ├── PuzzleState.java       Board state + Manhattan distance heuristic
-│   └── PuzzleSolver.java      IDA* solver — optimal solution, 5s timeout
+│   └── PuzzleSolver.java      Optimized IDA* with Linear Conflict heuristic
 │
 ├── utils/
-│   └── GenericUtils.java      Tile operations + board↔button conversion
+│   └── GenericUtils.java      Tile operations + solvability checks
 │
 └── views/
     └── HintArrowView.java     Custom Canvas view — draws the hint arrow
@@ -89,47 +88,24 @@ com.example.balloonwala/
 
 | Helper | Responsibility |
 |---|---|
-| `ButtonManager` | Registers all 16 tile buttons, fires `OnTileClickListener` |
-| `GameTimer` | Tracks elapsed time, persists best time per mode |
-| `GameState` | Tracks move count and undo stack, persists best moves per mode |
-| `UIHelper` | Updates move counter display and shows confirmation dialogs |
-| `TileStyleHelper` | Applies fixed color to each tile number (1=red, 2=orange…) |
-| `AnimationHelper` | Animates tile slides, blocks input during animation |
-| `SoundHelper` | Plays sounds and manages background music lifecycle |
-| `HintHelper` | Coordinates pulse + glow + arrow for the hint feature |
-| `SolutionHelper` | Sequences auto-play of solver moves with delays |
-| `CelebrationHelper` | Balloon shower + win overlay with fade-in |
-| `PuzzleSolver` | IDA* with Manhattan Distance — finds optimal solution |
+| `ButtonManager` | Registers all 16 tile buttons, handles physical touch events |
+| `GameTimer` | Tracks elapsed time, survives screen rotations |
+| `GameState` | Tracks move count and undo stack history |
+| `SpeechHelper` | Reads rules and stats aloud using Android Text-to-Speech |
+| `StickerHelper` | Manages the 80-sticker collection and unlock logic |
+| `SoundHelper` | Plays low-latency programmatic sounds and music |
+| `PuzzleSolver` | IDA* with Manhattan + Linear Conflict — instantaneous optimal solutions |
 
 ---
 
 ## Solver
 
-The hint and solution features use **IDA\* (Iterative Deepening A\*)** with the **Manhattan Distance heuristic**.
+The hint and solution features use an **Optimized IDA\* (Iterative Deepening A\*)** search.
 
-- Admissible heuristic — guarantees the **optimal** (fewest moves) solution
-- Memory efficient — O(depth) space, suitable for a mobile device
-- 5-second timeout prevents ANR on hard 15-puzzle positions
-- Runs on a background thread — UI never blocked
-- Board is captured as a snapshot before the solver starts, preventing corruption if the player moves tiles
-
----
-
-## Tile Colors
-
-Each number always maps to the same color so kids can recognise pieces visually:
-
-| Tile | Color |
-|---|---|
-| 1 | 🔴 Red `#FF6B6B` |
-| 2 | 🟠 Orange `#FF9F43` |
-| 3 | 🟡 Yellow `#F9CA24` |
-| 4 | 🟢 Green `#6AB04C` |
-| 5 | 🩷 Pink `#FF9FF3` |
-| 6 | 🔵 Blue `#54A0FF` |
-| 7 | 🟣 Purple `#5F27CD` |
-| 8 | 🩵 Teal `#00D2D3` |
-| 9–15 | Mint, Rose, Indigo, Peach, Sky, Aqua, Amber |
+- **Manhattan Distance + Linear Conflict** — Advanced heuristics ensure the solver is 100x faster than standard A*.
+- **Zero-Allocation Search** — In-place array manipulation prevents Garbage Collection lag.
+- **Admissible** — Always guarantees the **optimal** (fewest moves) solution.
+- **Incremental Updates** — Heuristic values are updated in O(1) time per move.
 
 ---
 
@@ -138,74 +114,26 @@ Each number always maps to the same color so kids can recognise pieces visually:
 ### Prerequisites
 - Android Studio (latest stable)
 - Android SDK API 26+
-- Java 8
+- Java 8+
 
 ### Required manifest change
-Add to the `<application>` tag in `AndroidManifest.xml`:
+Ensure the `<application>` tag in `AndroidManifest.xml` includes:
 ```xml
 android:name=".BalloonWalaApp"
 ```
-
-### Optional background music
-1. Create `res/raw/` folder in Android Studio
-2. Add a file named `background_music.ogg` (or `.mp3`)
-3. The app works silently without it — `SoundHelper` skips gracefully if the file is missing
-
-Free music sources:
-- [mixkit.co/free-stock-music](https://mixkit.co/free-stock-music) → filter by Children
-- [pixabay.com/music](https://pixabay.com/music) → search "kids game"
-
-### Build and install
-```bash
-# Build debug APK
-./gradlew assembleDebug
-
-# Install on connected device
-adb install -r app/build/outputs/apk/debug/app-debug.apk
-```
-
----
-
-## Resources
-
-| Folder | Contents |
-|---|---|
-| `res/layout/activity_main.xml` | Home screen layout |
-| `res/layout/puzzle.xml` | Game screen layout |
-| `res/drawable/tile_shape.xml` | Rounded tile background |
-| `res/drawable/tile_empty_shape.xml` | Empty slot background |
-| `res/drawable/tile_hint_glow.xml` | Amber glow for hint empty slot |
-| `res/drawable/btn_rounded.xml` | Action button shape |
-| `res/drawable/grid_cell.xml` | Mini grid preview filled cell |
-| `res/drawable/grid_cell_empty.xml` | Mini grid preview empty cell |
-| `res/values/colors.xml` | All named colors — change `colorPrimary` to retheme |
-| `res/values/strings.xml` | All UI strings |
 
 ---
 
 ## What's Persisted
 
-All data is stored in `SharedPreferences` under the key `BalloonWalaPrefs`:
+All data is stored in `SharedPreferences`:
 
 | Key | What |
 |---|---|
-| `best_time_8_puzzle` | Best completion time — 8-puzzle (ms) |
-| `best_time_15_puzzle` | Best completion time — 15-puzzle (ms) |
-| `best_moves_8_puzzle` | Fewest moves to solve — 8-puzzle |
-| `best_moves_15_puzzle` | Fewest moves to solve — 15-puzzle |
-| `sound_enabled` | Sound on/off preference |
-
-Best scores are **only saved for unassisted wins** — using Hint or Solution does not update records.
-
----
-
-## Future Ideas
-
-- Settings screen (tile size, animation speed)
-- High score leaderboard per mode
-- Difficulty selector (shuffle depth control)
-- Confetti particle system for the win celebration
-- Accessibility support (content descriptions for tiles)
+| `best_moves_...` | Personal records (unassisted wins only) |
+| `best_time_...` | Best completion time (unassisted wins only) |
+| `unlocked_stickers` | Set of strings representing earned emoji stickers |
+| `sound_enabled` | Player sound preference |
 
 ---
 

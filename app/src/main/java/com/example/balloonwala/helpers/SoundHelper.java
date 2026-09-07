@@ -16,12 +16,9 @@ import java.util.concurrent.Executors;
  * Manages all game sounds.
  * <p>
  * Tile tap and win fanfare are generated programmatically
- * using sine waves — no audio files needed for these.
+ * using sine waves.
  * <p>
- * Background music is optional — loaded from res/raw/background_music
- * if the file exists. App works silently without it.
- * <p>
- * Sound on/off preference is persisted in SharedPreferences.
+ * Optimized: Caches generated PCM buffers for common sounds.
  */
 public class SoundHelper {
 
@@ -36,16 +33,24 @@ public class SoundHelper {
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private MediaPlayer backgroundPlayer;
 
+    // Cached PCM buffers to avoid recalculating math
+    private final byte[] tapBuffer;
+    private final byte[] popBuffer;
+
     public SoundHelper(Context context) {
         prefs = context.getSharedPreferences(
                 AppConstants.PREFS_NAME, Context.MODE_PRIVATE);
+        
+        // Pre-generate common sounds
+        tapBuffer = generateSineWave(700, 60, 0.8f);
+        popBuffer = generateSineWave(900, 40, 0.9f);
+        
         initialiseBackgroundMusic(context);
     }
 
     // ── Background Music ──────────────────────────────────
 
     private void initialiseBackgroundMusic(Context context) {
-        // Gracefully skip if background_music.ogg hasn't been added yet
         int resId = context.getResources().getIdentifier(
                 "background_music", "raw", context.getPackageName());
         if (resId == 0) return;
@@ -54,7 +59,7 @@ public class SoundHelper {
             backgroundPlayer = MediaPlayer.create(context, resId);
             if (backgroundPlayer != null) {
                 backgroundPlayer.setLooping(true);
-                backgroundPlayer.setVolume(0.08f, 0.08f); // soft background level
+                backgroundPlayer.setVolume(0.08f, 0.08f);
             }
         } catch (Exception e) {
             backgroundPlayer = null;
@@ -76,34 +81,18 @@ public class SoundHelper {
         startMusic();
     }
 
-    // ── Tile Tap ──────────────────────────────────────────
+    // ── Sound Effects ─────────────────────────────────────
 
-    /**
-     * Plays a short soft pop sound — generated as a sine wave burst.
-     * Runs on a background thread so it never blocks the UI.
-     */
     public void playTileTap() {
         if (!isSoundEnabled()) return;
-        executor.execute(() -> playBuffer(
-                generateSineWave(700, 60, 0.8f)));
+        executor.execute(() -> playBuffer(tapBuffer));
     }
 
-    /**
-     * Plays a satisfying "pop" sound — slightly higher pitch and shorter
-     * than the tile tap.
-     */
     public void playPop() {
         if (!isSoundEnabled()) return;
-        executor.execute(() -> playBuffer(
-                generateSineWave(900, 40, 0.9f)));
+        executor.execute(() -> playBuffer(popBuffer));
     }
 
-    // ── Win Fanfare ───────────────────────────────────────
-
-    /**
-     * Plays a C–E–G–C ascending fanfare — generated from sine waves.
-     * Runs on a background thread.
-     */
     public void playWinFanfare() {
         if (!isSoundEnabled()) return;
         executor.execute(() -> {
@@ -114,7 +103,7 @@ public class SoundHelper {
         });
     }
 
-    // ── Sound Toggle ──────────────────────────────────────
+    // ── Settings ──────────────────────────────────────────
 
     public boolean isSoundEnabled() {
         return prefs.getBoolean(KEY_SOUND_ENABLED, true);
@@ -126,8 +115,6 @@ public class SoundHelper {
         else pauseMusic();
     }
 
-    // ── Release ───────────────────────────────────────────
-
     public void release() {
         executor.shutdown();
         if (backgroundPlayer != null) {
@@ -138,21 +125,13 @@ public class SoundHelper {
 
     // ── Sound Generation ──────────────────────────────────
 
-    /**
-     * Generates a sine wave as a 16-bit PCM byte buffer.
-     * Applies a smooth bell-shaped envelope (sin^2) to avoid clicks.
-     *
-     * @param frequency  note frequency in Hz
-     * @param durationMs duration in milliseconds
-     * @param volume     amplitude 0.0–1.0
-     */
     private byte[] generateSineWave(int frequency, int durationMs, float volume) {
         int    numSamples = (durationMs * SAMPLE_RATE) / 1000;
-        byte[] buffer     = new byte[numSamples * 2]; // 16-bit PCM = 2 bytes per sample
+        byte[] buffer     = new byte[numSamples * 2];
 
         for (int i = 0; i < numSamples; i++) {
             double t        = (double) i / SAMPLE_RATE;
-            double envelope = Math.sin(Math.PI * i / numSamples); // fade in/out
+            double envelope = Math.sin(Math.PI * i / numSamples);
             double sample   = Math.sin(2 * Math.PI * frequency * t) * envelope * volume;
             short  pcm      = (short) (sample * Short.MAX_VALUE);
             buffer[2 * i]     = (byte) (pcm & 0xFF);
@@ -161,10 +140,6 @@ public class SoundHelper {
         return buffer;
     }
 
-    /**
-     * Plays a raw PCM byte buffer using AudioTrack.
-     * Blocks until playback is complete — must be called off the main thread.
-     */
     private void playBuffer(byte[] buffer) {
         AudioAttributes attrs = new AudioAttributes.Builder()
                 .setUsage(AudioAttributes.USAGE_GAME)
@@ -182,38 +157,32 @@ public class SoundHelper {
                 AudioFormat.CHANNEL_OUT_MONO,
                 AudioFormat.ENCODING_PCM_16BIT);
 
-        AudioTrack track = new AudioTrack.Builder()
-                .setAudioAttributes(attrs)
-                .setAudioFormat(format)
-                .setBufferSizeInBytes(Math.max(buffer.length, minBufferSize))
-                .setTransferMode(AudioTrack.MODE_STATIC)
-                .build();
+        try {
+            AudioTrack track = new AudioTrack.Builder()
+                    .setAudioAttributes(attrs)
+                    .setAudioFormat(format)
+                    .setBufferSizeInBytes(Math.max(buffer.length, minBufferSize))
+                    .setTransferMode(AudioTrack.MODE_STATIC)
+                    .build();
 
-        // Stop and release when playback reaches the end — no busy-wait
-        track.setNotificationMarkerPosition(buffer.length / 2);
-        track.setPlaybackPositionUpdateListener(
-            new AudioTrack.OnPlaybackPositionUpdateListener() {
-                @Override
-                public void onMarkerReached(AudioTrack audioTrack) {
-                    audioTrack.stop();
-                    audioTrack.release();
-                }
+            track.write(buffer, 0, buffer.length);
 
-                @Override
-                public void onPeriodicNotification(AudioTrack audioTrack) {
-                    // Not used
-                }
-            });
-
-        track.write(buffer, 0, buffer.length);
-
-        // Guard against uninitialized AudioTrack — can happen if audio
-        // hardware is unavailable. Avoids IllegalStateException on play()
-        if (track.getState() == AudioTrack.STATE_UNINITIALIZED) {
-            track.release();
-            return;
+            if (track.getState() == AudioTrack.STATE_INITIALIZED) {
+                track.setNotificationMarkerPosition(buffer.length / 2);
+                track.setPlaybackPositionUpdateListener(new AudioTrack.OnPlaybackPositionUpdateListener() {
+                    @Override
+                    public void onMarkerReached(AudioTrack t) {
+                        t.stop();
+                        t.release();
+                    }
+                    @Override public void onPeriodicNotification(AudioTrack t) {}
+                });
+                track.play();
+            } else {
+                track.release();
+            }
+        } catch (Exception e) {
+            // Silently ignore audio hardware errors
         }
-
-        track.play();
     }
 }

@@ -103,6 +103,11 @@ public class PuzzleActivity extends AppCompatActivity
      */
     private boolean puzzleAlreadySolved = false;
 
+    /**
+     * True if the "Pick Sticker" dialog is currently visible.
+     */
+    private boolean isPickingSticker = false;
+
 
     // ── Lifecycle ─────────────────────────────────────────
 
@@ -147,12 +152,21 @@ public class PuzzleActivity extends AppCompatActivity
         
         assistedSolve = savedInstanceState.getBoolean("assisted", false);
         puzzleAlreadySolved = savedInstanceState.getBoolean("is_solved", false);
+        isPickingSticker = savedInstanceState.getBoolean("is_picking", false);
         int steps = savedInstanceState.getInt("steps", 0);
+        long elapsed = savedInstanceState.getLong("elapsed_time", 0);
         
         gameState.reset();
         gameState.setStepsCount(steps);
         uiHelper.updateMovesDisplay(steps);
         
+        // Restore timer state
+        if (elapsed > 0 && !puzzleAlreadySolved) {
+            // We can't perfectly restore the Chronometer's internal state
+            // without more complex logic, but we can at least show the count.
+            gameTimer.start(); 
+        }
+
         // Locked state preservation
         if (puzzleAlreadySolved) {
             GenericUtils.disableButtons(buttonManager.getButtonList());
@@ -164,13 +178,16 @@ public class PuzzleActivity extends AppCompatActivity
             uiHelper.setUndoEnabled(gameState.canUndo());
         }
         
-        // Restore celebration if it was showing
-        if (savedInstanceState.getBoolean("celebration_showing", false)) {
-            String stats = steps + " " + getString(R.string.steps) + "  ·  "
-                    + gameTimer.getFormattedTime();
-            String result = assistedSolve
-                    ? getString(R.string.solved_with_help)
-                    : getString(R.string.puzzle_solved);
+        // Restore reward or celebration
+        String stats = steps + " " + getString(R.string.steps) + "  ·  "
+                + gameTimer.getFormattedTime();
+        String result = assistedSolve
+                ? getString(R.string.solved_with_help)
+                : getString(R.string.puzzle_solved);
+
+        if (isPickingSticker) {
+            showPickStickerDialog(result, stats, false);
+        } else if (savedInstanceState.getBoolean("celebration_showing", false)) {
             celebrationHelper.showCelebration(result + "\n" + stats, false, null, this::startNewGame);
         }
     }
@@ -205,7 +222,9 @@ public class PuzzleActivity extends AppCompatActivity
         celebrationHelper.hideCelebration();
         hintHelper.cancel();
         solutionHelper.stop();
-        solverExecutor.shutdown();
+        
+        // BUG FIX: Immediate shutdown of solver tasks
+        solverExecutor.shutdownNow();
         
         // BUG FIX: Removed resumeMusic() from here. 
         // PuzzleActivity should not be responsible for turning music back on.
@@ -507,9 +526,11 @@ public class PuzzleActivity extends AppCompatActivity
     }
 
     private void showPickStickerDialog(String result, String stats, boolean isNewBest) {
+        isPickingSticker = true;
         List<String> options = stickerHelper.getRewardOptions(3);
         
         if (options.isEmpty()) {
+            isPickingSticker = false;
             // Already have all stickers
             celebrationHelper.showCelebration(result + "\n" + stats, isNewBest, "FULL", this::startNewGame);
             return;
@@ -527,7 +548,10 @@ public class PuzzleActivity extends AppCompatActivity
             Button btn = new Button(this);
             btn.setText(sticker);
             btn.setTextSize(40);
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0, 200, 1.0f);
+            
+            // Fixed: Use DP for button height instead of raw pixels
+            int heightPx = (int) (100 * getResources().getDisplayMetrics().density);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0, heightPx, 1.0f);
             params.setMargins(8, 8, 8, 8);
             btn.setLayoutParams(params);
             
@@ -535,6 +559,7 @@ public class PuzzleActivity extends AppCompatActivity
             ButtonStyleHelper.stylePrimary(btn);
             
             btn.setOnClickListener(v -> {
+                isPickingSticker = false;
                 stickerHelper.unlockSticker(sticker);
                 dialog.dismiss();
                 // Now show the final celebration with the chosen sticker
@@ -563,7 +588,9 @@ public class PuzzleActivity extends AppCompatActivity
                 GenericUtils.extractBoard(buttonManager.getButtonList()));
         outState.putBoolean("assisted", assistedSolve);
         outState.putBoolean("is_solved", puzzleAlreadySolved);
+        outState.putBoolean("is_picking", isPickingSticker);
         outState.putInt("steps", gameState.getStepsCount());
+        outState.putLong("elapsed_time", gameTimer.getElapsedMillis());
         outState.putBoolean("celebration_showing", celebrationHelper.isShowing());
     }
 

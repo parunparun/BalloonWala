@@ -13,6 +13,8 @@ public class SpeechHelper implements TextToSpeech.OnInitListener {
     private TextToSpeech tts;
     private boolean initialized = false;
 
+    private String pendingSpeech = null;
+
     public SpeechHelper(Context context) {
         tts = new TextToSpeech(context, this);
     }
@@ -25,6 +27,11 @@ public class SpeechHelper implements TextToSpeech.OnInitListener {
                 Log.e("SpeechHelper", "Language not supported");
             } else {
                 initialized = true;
+                // Speak anything that was requested before we were ready
+                if (pendingSpeech != null) {
+                    speak(pendingSpeech);
+                    pendingSpeech = null;
+                }
             }
         } else {
             Log.e("SpeechHelper", "Initialization failed");
@@ -37,6 +44,8 @@ public class SpeechHelper implements TextToSpeech.OnInitListener {
     public void speak(String text) {
         if (initialized && tts != null) {
             tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, null);
+        } else {
+            pendingSpeech = text;
         }
     }
 
