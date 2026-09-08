@@ -405,7 +405,7 @@ public class PuzzleActivity extends AppCompatActivity
 
                 if (moves.isEmpty()) {
                     Toast.makeText(PuzzleActivity.this,
-                            "That's a tough one! Try moving a tile first.", 
+                            getString(R.string.solver_timeout_hint), 
                             Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -462,7 +462,7 @@ public class PuzzleActivity extends AppCompatActivity
                 if (moves.isEmpty()) {
                     // Timed out or already solved — restore UI
                     Toast.makeText(PuzzleActivity.this,
-                            "Almost there! Try solving the last few tiles yourself.", 
+                            getString(R.string.solver_timeout_solution), 
                             Toast.LENGTH_SHORT).show();
                     for (Button b : buttonManager.getButtonList()) b.setEnabled(true);
                     setHintSolutionEnabled(true);
@@ -544,19 +544,21 @@ public class PuzzleActivity extends AppCompatActivity
                 .setCancelable(false)
                 .create();
 
+        int index = 0;
         for (String sticker : options) {
             Button btn = new Button(this);
             btn.setText(sticker);
             btn.setTextSize(40);
             
-            // Fixed: Use DP for button height instead of raw pixels
             int heightPx = (int) (100 * getResources().getDisplayMetrics().density);
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0, heightPx, 1.0f);
             params.setMargins(8, 8, 8, 8);
             btn.setLayoutParams(params);
             
-            // Use existing styling for buttons
-            ButtonStyleHelper.stylePrimary(btn);
+            // Give each button a unique kid-friendly color
+            if (index == 0)      ButtonStyleHelper.stylePrimary(btn);    // Red
+            else if (index == 1) ButtonStyleHelper.stylePlayAgain(btn);  // Green
+            else                 ButtonStyleHelper.styleMenu(btn);       // Blue
             
             btn.setOnClickListener(v -> {
                 isPickingSticker = false;
@@ -566,6 +568,7 @@ public class PuzzleActivity extends AppCompatActivity
                 celebrationHelper.showCelebration(result + "\n" + stats, isNewBest, sticker, this::startNewGame);
             });
             container.addView(btn);
+            index++;
         }
 
         dialog.show();

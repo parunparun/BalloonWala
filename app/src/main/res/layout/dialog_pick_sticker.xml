@@ -9,7 +9,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Pick Your Prize! 🎁"
+        android:text="@string/pick_prize_title"
         android:textSize="24sp"
         android:textStyle="bold"
         android:textColor="?attr/colorPrimary"
@@ -30,7 +30,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Tap your favorite sticker!"
+        android:text="@string/pick_prize_hint"
         android:textSize="16sp"
         android:layout_marginTop="16dp"
         android:textColor="@color/colorTextSecondary"/>
