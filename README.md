@@ -7,6 +7,18 @@ Slide the numbered tiles into the correct order to win — then enjoy the balloo
 
 ---
 
+## 📸 Screenshots
+
+| Home Screen | Puzzle Gameplay | Sticker Book |
+|:---:|:---:|:---:|
+| ![Home Screen](assets/screenshots/home.png) | ![Gameplay](assets/screenshots/game.png) | ![Stickers](assets/screenshots/stickers.png) |
+
+| Hint System | Victory Pop! | Pick Your Prize |
+|:---:|:---:|:---:|
+| ![Hint](assets/screenshots/hint.png) | ![Celebration](assets/screenshots/celebration.png) | ![Prize](assets/screenshots/prize.png) |
+
+---
+
 ## Features
 
 **Gameplay**
@@ -15,11 +27,12 @@ Slide the numbered tiles into the correct order to win — then enjoy the balloo
 - Live move counter and timer during play
 - Undo — step back through your moves one at a time
 - Best score and best time saved between sessions
-- **State Persistence** — survived screen rotations and app backgrounding without losing progress
+- **State Persistence** — survives screen rotations and app backgrounding without losing progress
+- **View Board** — Optional "View Board" mode after winning to appreciate the solved puzzle
 
 **Interactive Rewards (New! 🎁)**
-- **Sticker Book** — Earn over 80 unique animal and space emojis!
-- **Pick Your Prize** — Solve a puzzle without hints to choose 1 of 3 new stickers for your collection.
+- **Sticker Book** — Earn over 80 unique animal and space emojis displayed in a large, kid-friendly grid.
+- **Pick Your Prize** — Solve a puzzle without hints to choose 1 of 3 colorful mystery stickers.
 - **Interactive Celebration** — Tap the floating victory balloons to pop them with a satisfying sound!
 
 **Kid-Friendly Accessibility**
@@ -35,7 +48,7 @@ Slide the numbered tiles into the correct order to win — then enjoy the balloo
 - 🎯 Solution button — watch the full optimal solution auto-played step by step
 
 **Sound**
-- Tile tap and Balloon "Pop" sounds (programmatic sine waves)
+- Tile tap and Balloon "Pop" sounds (low-latency programmatic sine waves)
 - Win fanfare melody — C–E–G–C ascending notes
 - Optional background music (add `res/raw/background_music.ogg`)
 - Sound on/off toggle on the home screen, persisted between sessions
@@ -47,12 +60,15 @@ Slide the numbered tiles into the correct order to win — then enjoy the balloo
 ```
 com.example.balloonwala/
 │
+├── assets/                    Project assets (screenshots, etc.)
+│   └── screenshots/           App preview images
+│
 ├── AppConstants.java          Puzzle mode sizes + SharedPreferences name
 ├── NavigationConstants.java   Intent extra keys for screen navigation
 ├── BalloonWalaApp.java        Application singleton — Helper lifecycle management
 │
 ├── MainActivity.java          Home screen — mode selection + Sticker Book
-├── SplashActivity.java        2-second splash screen
+├── SplashActivity.java        Splash screen
 ├── PuzzleActivity.java        Game screen — orchestrates gameplay + state restoration
 │
 ├── helpers/
@@ -60,7 +76,7 @@ com.example.balloonwala/
 │   ├── ButtonManager.java     Tile button registry and touch handling
 │   ├── ButtonStyleHelper.java Programmatic Material button styling
 │   ├── CelebrationHelper.java Interactive balloon shower + win overlay
-│   ├── GameState.java         Move counter + undo stack (ArrayDeque)
+│   ├── GameState.java         Move counter + undo stack history
 │   ├── GameTimer.java         Chronometer wrapper — survives rotations
 │   ├── HintHelper.java        Pulse + glow + canvas arrow hint
 │   ├── SolutionHelper.java    Auto-plays solution step by step
@@ -68,7 +84,7 @@ com.example.balloonwala/
 │   ├── SpeechHelper.java      Text-to-Speech management
 │   ├── StickerHelper.java     Reward system + sticker persistence
 │   ├── TileStyleHelper.java   Fixed color per tile number (pre-parsed)
-│   └── UIHelper.java          Moves display + common dialogs
+│   └── UIHelper.java          Common dialogs + Sticker gallery UI
 │
 ├── solver/
 │   └── PuzzleSolver.java      Optimized IDA* with Linear Conflict heuristic
@@ -82,30 +98,14 @@ com.example.balloonwala/
 
 ---
 
-## Architecture
-
-`PuzzleActivity` is a **pure orchestrator** — it contains zero game logic itself. Every responsibility lives in a dedicated helper:
-
-| Helper | Responsibility |
-|---|---|
-| `ButtonManager` | Registers all 16 tile buttons, handles physical touch events |
-| `GameTimer` | Tracks elapsed time, survives screen rotations |
-| `GameState` | Tracks move count and undo stack history |
-| `SpeechHelper` | Reads rules and stats aloud using Android Text-to-Speech |
-| `StickerHelper` | Manages the 80-sticker collection and unlock logic |
-| `SoundHelper` | Plays low-latency programmatic sounds and music |
-| `PuzzleSolver` | IDA* with Manhattan + Linear Conflict — instantaneous optimal solutions |
-
----
-
 ## Solver
 
 The hint and solution features use an **Optimized IDA\* (Iterative Deepening A\*)** search.
 
-- **Manhattan Distance + Linear Conflict** — Advanced heuristics ensure the solver is 100x faster than standard A*.
-- **Zero-Allocation Search** — In-place array manipulation prevents Garbage Collection lag.
+- **Manhattan Distance + Linear Conflict** — Advanced heuristics ensure the solver is up to 100x faster than basic A*.
+- **Zero-Allocation Search** — In-place array manipulation prevents Garbage Collection pauses.
 - **Admissible** — Always guarantees the **optimal** (fewest moves) solution.
-- **Incremental Updates** — Heuristic values are updated in O(1) time per move.
+- **Incremental Updates** — Heuristic values are updated in O(1) time per move for maximum speed.
 
 ---
 
