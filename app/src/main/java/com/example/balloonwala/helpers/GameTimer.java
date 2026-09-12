@@ -45,6 +45,19 @@ public class GameTimer {
         });
     }
 
+    /**
+     * Restores timer from a previously saved elapsed time.
+     * Used when Activity is recreated by the system.
+     */
+    public void startFromElapsed(long elapsedMillis) {
+        running = true;
+        chronometer.post(() -> {
+            chronometer.setCountDown(false);
+            chronometer.setBase(SystemClock.elapsedRealtime() - elapsedMillis);
+            chronometer.start();
+        });
+    }
+
     /** Stops the timer permanently (e.g. puzzle solved). */
     public void stop() {
         if (running) {

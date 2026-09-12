@@ -23,20 +23,20 @@ public class TileStyleHelper {
     // Fixed tile colors — index 0 = tile "1", index 1 = tile "2" etc.
     private static final String[] TILE_COLORS = {
             "#FF6B6B",  //  1 — Red
-            "#FF9F43",  //  2 — Orange
+            "#FF9F43",  //  2 — Light Orange
             "#F9CA24",  //  3 — Yellow  (dark text)
-            "#6AB04C",  //  4 — Green
-            "#FF9FF3",  //  5 — Pink    (dark text)
-            "#54A0FF",  //  6 — Blue
-            "#5F27CD",  //  7 — Purple
-            "#00D2D3",  //  8 — Teal
-            "#1DD1A1",  //  9 — Mint
-            "#FD79A8",  // 10 — Rose
-            "#6C5CE7",  // 11 — Indigo
-            "#FAB1A0",  // 12 — Peach  (dark text)
-            "#74B9FF",  // 13 — Sky
-            "#55EFC4",  // 14 — Aqua   (dark text)
-            "#FDCB6E",  // 15 — Amber  (dark text)
+            "#E67E22",  //  4 — Burnt Orange
+            "#6AB04C",  //  5 — Green    (dark text)
+            "#1DD1A1",  //  6 — Mint
+            "#00D2D3",  //  7 — Teal
+            "#74B9FF",  //  8 — Sky Blue
+            "#54A0FF",  //  9 — Blue
+            "#6C5CE7",  // 10 — Indigo
+            "#5F27CD",  // 11 — Purple
+            "#FF9FF3",  // 12 — Pink  (dark text)
+            "#FD79A8",  // 13 — Rose
+            "#FAB1A0",  // 14 — Peach   (dark text)
+            "#55EFC4",  // 15 — Aqua  (dark text)
     };
 
     // Pre-parsed int values — avoids Color.parseColor() on every tap
@@ -49,7 +49,7 @@ public class TileStyleHelper {
     }
 
     // Tile numbers that need dark text (light colored tiles)
-    private static final int[] DARK_TEXT_TILES = { 3, 5, 12, 14, 15 };
+    private static final int[] DARK_TEXT_TILES = { 3, 7, 8, 12, 14, 15 };
 
     // Pre-parsed dark text color
     private static final int DARK_TEXT_COLOR  = Color.parseColor("#333333");

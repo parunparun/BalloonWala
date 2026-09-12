@@ -8,24 +8,19 @@ import android.util.AttributeSet;
 import android.view.View;
 
 /**
- * Transparent overlay view that draws a directional arrow
- * floating in the gap between the hint tile and empty slot.
- * <p>
- * Sits on top of the puzzle grid in puzzle.xml.
- * clickable=false so all touches pass through to the tiles below.
- * <p>
- * Call showArrow() with edge coordinates to display.
- * Call clearArrow() to hide.
+ * Transparent overlay view that draws a directional arrow.
+ * This version uses a combination of a thick line and a triangular head
+ * to ensure maximum visibility and a clean "pointer" look.
  */
 public class HintArrowView extends View {
 
-    private static final float STROKE_WIDTH = 10f;
-    private static final float ARROW_SIZE   = 36f;
-    private static final int   ARROW_COLOR  = 0xFFFDCB6E; // amber
+    private static final int   ARROW_COLOR     = 0xFFFFD15C; // Electric Yellow
+    private static final float SHAFT_WIDTH_DP  = 10f;
+    private static final float HEAD_SIZE_DP    = 24f;
+    private static final float TILE_OFFSET_DP  = 22f;
 
-    private final Paint linePaint;
-    private final Paint fillPaint;
-    private final Path  arrowHeadPath = new Path();
+    private final Paint paint;
+    private final Path  headPath = new Path();
 
     private float   startX, startY, endX, endY;
     private boolean showing = false;
@@ -35,25 +30,13 @@ public class HintArrowView extends View {
         setClickable(false);
         setFocusable(false);
 
-        // Shaft paint
-        linePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        linePaint.setColor(ARROW_COLOR);
-        linePaint.setStrokeWidth(STROKE_WIDTH);
-        linePaint.setStyle(Paint.Style.STROKE);
-        linePaint.setStrokeCap(Paint.Cap.ROUND);
-
-        // Arrowhead fill paint
-        fillPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        fillPaint.setColor(ARROW_COLOR);
-        fillPaint.setStyle(Paint.Style.FILL);
+        paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        paint.setColor(ARROW_COLOR);
+        paint.setStrokeCap(Paint.Cap.ROUND);
+        
+        setLayerType(View.LAYER_TYPE_SOFTWARE, null);
     }
 
-    // ── Public API ────────────────────────────────────────
-
-    /**
-     * Draws an arrow from start (tile center) to end (empty slot center).
-     * Coordinates must be in this view's local coordinate space.
-     */
     public void showArrow(float startX, float startY, float endX, float endY) {
         this.startX  = startX;
         this.startY  = startY;
@@ -63,13 +46,10 @@ public class HintArrowView extends View {
         invalidate();
     }
 
-    /** Hides the arrow. */
     public void clearArrow() {
         this.showing = false;
         invalidate();
     }
-
-    // ── Drawing ───────────────────────────────────────────
 
     @Override
     protected void onDraw(Canvas canvas) {
@@ -79,29 +59,47 @@ public class HintArrowView extends View {
         float dx     = endX - startX;
         float dy     = endY - startY;
         float length = (float) Math.sqrt(dx * dx + dy * dy);
-        if (length < 1f) return;
+        if (length < 10f) return;
 
         float nx = dx / length;
         float ny = dy / length;
 
-        // Shorten shaft end so it doesn't run under the arrowhead
-        float lineEndX = endX - nx * ARROW_SIZE * 0.6f;
-        float lineEndY = endY - ny * ARROW_SIZE * 0.6f;
+        float density  = getResources().getDisplayMetrics().density;
+        float offset   = TILE_OFFSET_DP * density;
+        float headSize = HEAD_SIZE_DP   * density;
+        float sWidth   = SHAFT_WIDTH_DP * density;
 
-        // Draw shaft
-        canvas.drawLine(startX, startY, lineEndX, lineEndY, linePaint);
+        // Start/End points offset from tile centers
+        float drawStartX = startX + nx * offset;
+        float drawStartY = startY + ny * offset;
+        float drawEndX   = endX   - nx * offset;
+        float drawEndY   = endY   - ny * offset;
 
-        // Draw filled arrowhead at end point
-        double angle = Math.atan2(endY - startY, endX - startX);
-        arrowHeadPath.reset();
-        arrowHeadPath.moveTo(endX, endY);
-        arrowHeadPath.lineTo(
-                (float)(endX - ARROW_SIZE * Math.cos(angle - Math.PI / 6)),
-                (float)(endY - ARROW_SIZE * Math.sin(angle - Math.PI / 6)));
-        arrowHeadPath.lineTo(
-                (float)(endX - ARROW_SIZE * Math.cos(angle + Math.PI / 6)),
-                (float)(endY - ARROW_SIZE * Math.sin(angle + Math.PI / 6)));
-        arrowHeadPath.close();
-        canvas.drawPath(arrowHeadPath, fillPaint);
+        // 1. Draw the Shaft
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setStrokeWidth(sWidth);
+        canvas.drawLine(drawStartX, drawStartY, drawEndX, drawEndY, paint);
+
+        // 2. Draw the Head
+        paint.setStyle(Paint.Style.FILL);
+        double angle = Math.atan2(dy, dx);
+        
+        headPath.reset();
+        headPath.moveTo(drawEndX, drawEndY); // Tip
+        
+        // Calculate the two corners of the triangular head base
+        float bx = drawEndX - nx * headSize;
+        float by = drawEndY - ny * headSize;
+        
+        float h1x = (float) (bx + (headSize / 1.5f) * Math.cos(angle + Math.PI / 2));
+        float h1y = (float) (by + (headSize / 1.5f) * Math.sin(angle + Math.PI / 2));
+        float h2x = (float) (bx + (headSize / 1.5f) * Math.cos(angle - Math.PI / 2));
+        float h2y = (float) (by + (headSize / 1.5f) * Math.sin(angle - Math.PI / 2));
+
+        headPath.lineTo(h1x, h1y);
+        headPath.lineTo(h2x, h2y);
+        headPath.close();
+
+        canvas.drawPath(headPath, paint);
     }
 }

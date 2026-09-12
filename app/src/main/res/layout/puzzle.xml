@@ -5,7 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- ── Toolbar ─────────────────────────────────────── -->
     <com.google.android.material.appbar.AppBarLayout
         android:theme="@style/AppTheme.AppBarOverlay"
         android:layout_width="match_parent"
@@ -19,13 +18,13 @@
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:clickable="false"
+        android:id="@+id/puzzleContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/colorBackground"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <!-- Stats Bar: Moves | Timer -->
+        <!-- Stats Bar -->
         <LinearLayout
             android:id="@+id/statsBar"
             android:layout_width="match_parent"
@@ -35,463 +34,145 @@
             android:gravity="center"
             android:paddingStart="24dp"
             android:paddingEnd="24dp"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
-
-            <!-- Moves stat -->
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical"
-                android:gravity="center"
-                android:background="@color/colorStatBox"
-                android:paddingTop="8dp"
-                android:paddingBottom="8dp"
-                android:layout_marginEnd="8dp">
-                <TextView
-                    android:id="@+id/movesCountTextView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="0"
-                    android:textColor="@android:color/white"
-                    android:textSize="24sp"
-                    android:textStyle="bold"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="MOVES"
-                    android:textColor="@color/colorStatLabel"
-                    android:textSize="10sp"
-                    android:textStyle="bold"
-                    android:letterSpacing="0.1"/>
+            app:layout_constraintTop_toTopOf="parent">
+            <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:orientation="vertical" android:gravity="center" android:background="@color/colorStatBox">
+                <TextView android:id="@+id/movesCountTextView" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0" android:textColor="@android:color/white" android:textSize="24sp" android:textStyle="bold"/>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="MOVES" android:textColor="@color/colorStatLabel" android:textSize="10sp" android:textStyle="bold"/>
             </LinearLayout>
-
-            <!-- Timer stat -->
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical"
-                android:gravity="center"
-                android:background="@color/colorStatBox"
-                android:paddingTop="8dp"
-                android:paddingBottom="8dp"
-                android:layout_marginStart="8dp">
-                <Chronometer
-                    android:id="@+id/timerChronometer"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@android:color/white"
-                    android:textSize="24sp"
-                    android:textStyle="bold"
-                    android:format="%s"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="TIME"
-                    android:textColor="@color/colorStatLabel"
-                    android:textSize="10sp"
-                    android:textStyle="bold"
-                    android:letterSpacing="0.1"/>
+            <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:orientation="vertical" android:gravity="center" android:background="@color/colorStatBox" android:layout_marginStart="16dp">
+                <Chronometer android:id="@+id/timerChronometer" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textColor="@android:color/white" android:textSize="24sp" android:textStyle="bold"/>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="TIME" android:textColor="@color/colorStatLabel" android:textSize="10sp" android:textStyle="bold"/>
             </LinearLayout>
         </LinearLayout>
 
-        <!-- ── Puzzle Grid ─────────────────────────────── -->
+        <!-- ── Puzzle Grid (True Bidirectional packed Chain Mesh) ── -->
+
         <!-- Row 1 -->
-        <Button
-            style="@style/TileButton"
-            android:id="@+id/buttonCoordinates1_1"
-            android:layout_width="75dp"
-            android:layout_height="75dp"
-            android:layout_marginTop="24dp"
-            android:layout_marginStart="75dp"
-            android:textSize="28sp"
-            android:textStyle="bold"
-            android:textColor="@android:color/white"
-            android:elevation="4dp"
-            android:stateListAnimator="@null"
-            app:layout_constraintTop_toBottomOf="@+id/statsBar"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/buttonCoordinates1_2"
-            app:layout_constraintBottom_toTopOf="@+id/buttonCoordinates2_1"/>
-
-        <Button
-            style="@style/TileButton"
-            android:id="@+id/buttonCoordinates1_2"
-            android:layout_width="75dp"
-            android:layout_height="75dp"
-            android:layout_marginTop="24dp"
-            android:textSize="28sp"
-            android:textStyle="bold"
-            android:textColor="@android:color/white"
-            android:elevation="4dp"
-            android:stateListAnimator="@null"
-            app:layout_constraintTop_toBottomOf="@+id/statsBar"
-            app:layout_constraintStart_toEndOf="@+id/buttonCoordinates1_1"
-            app:layout_constraintEnd_toStartOf="@+id/buttonCoordinates1_3"
-            app:layout_constraintBottom_toTopOf="@+id/buttonCoordinates2_2"/>
-
-        <Button
-            style="@style/TileButton"
-            android:id="@+id/buttonCoordinates1_3"
-            android:layout_width="75dp"
-            android:layout_height="75dp"
-            android:layout_marginTop="24dp"
-            android:textSize="28sp"
-            android:textStyle="bold"
-            android:textColor="@android:color/white"
-            android:elevation="4dp"
-            android:stateListAnimator="@null"
-            app:layout_constraintTop_toBottomOf="@+id/statsBar"
-            app:layout_constraintStart_toEndOf="@+id/buttonCoordinates1_2"
-            app:layout_constraintEnd_toStartOf="@+id/buttonCoordinates1_4"
-            app:layout_constraintBottom_toTopOf="@+id/buttonCoordinates2_3"/>
-
-        <Button
-            style="@style/TileButton"
-            android:id="@+id/buttonCoordinates1_4"
-            android:layout_width="75dp"
-            android:layout_height="75dp"
-            android:layout_marginTop="24dp"
-            android:textSize="28sp"
-            android:textStyle="bold"
-            android:textColor="@android:color/white"
-            android:elevation="4dp"
-            android:stateListAnimator="@null"
-            app:layout_constraintTop_toBottomOf="@+id/statsBar"
-            app:layout_constraintStart_toEndOf="@+id/buttonCoordinates1_3"
-            app:layout_constraintBottom_toTopOf="@+id/buttonCoordinates2_4"/>
+        <Button style="@style/TileButton" android:id="@+id/buttonCoordinates1_1" android:layout_width="75dp" android:layout_height="75dp"
+            app:layout_constraintHorizontal_chainStyle="packed" app:layout_constraintVertical_chainStyle="packed"
+            app:layout_constraintTop_toBottomOf="@+id/statsBar" app:layout_constraintBottom_toTopOf="@+id/buttonCoordinates2_1"
+            app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toStartOf="@+id/buttonCoordinates1_2"
+            app:layout_constraintVertical_bias="0.5" android:layout_marginTop="24dp"/>
+        <Button style="@style/TileButton" android:id="@+id/buttonCoordinates1_2" android:layout_width="75dp" android:layout_height="75dp"
+            app:layout_constraintTop_toTopOf="@+id/buttonCoordinates1_1" app:layout_constraintBottom_toBottomOf="@+id/buttonCoordinates1_1"
+            app:layout_constraintStart_toEndOf="@+id/buttonCoordinates1_1" app:layout_constraintEnd_toStartOf="@+id/buttonCoordinates1_3"/>
+        <Button style="@style/TileButton" android:id="@+id/buttonCoordinates1_3" android:layout_width="75dp" android:layout_height="75dp"
+            app:layout_constraintTop_toTopOf="@+id/buttonCoordinates1_1" app:layout_constraintBottom_toBottomOf="@+id/buttonCoordinates1_1"
+            app:layout_constraintStart_toEndOf="@+id/buttonCoordinates1_2" app:layout_constraintEnd_toStartOf="@+id/buttonCoordinates1_4"/>
+        <Button style="@style/TileButton" android:id="@+id/buttonCoordinates1_4" android:layout_width="75dp" android:layout_height="75dp"
+            app:layout_constraintTop_toTopOf="@+id/buttonCoordinates1_1" app:layout_constraintBottom_toBottomOf="@+id/buttonCoordinates1_1"
+            app:layout_constraintStart_toEndOf="@+id/buttonCoordinates1_3" app:layout_constraintEnd_toEndOf="parent"/>
 
         <!-- Row 2 -->
-        <Button
-            style="@style/TileButton"
-            android:id="@+id/buttonCoordinates2_1"
-            android:layout_width="75dp"
-            android:layout_height="75dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginStart="75dp"
-            android:textSize="28sp"
-            android:textStyle="bold"
-            android:textColor="@android:color/white"
-            android:elevation="4dp"
-            android:stateListAnimator="@null"
-            app:layout_constraintTop_toBottomOf="@+id/buttonCoordinates1_1"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/buttonCoordinates2_2"
-            app:layout_constraintBottom_toTopOf="@+id/buttonCoordinates3_1"/>
-
-        <Button
-            style="@style/TileButton"
-            android:id="@+id/buttonCoordinates2_2"
-            android:layout_width="75dp"
-            android:layout_height="75dp"
-            android:layout_marginTop="8dp"
-            android:textSize="28sp"
-            android:textStyle="bold"
-            android:textColor="@android:color/white"
-            android:elevation="4dp"
-            android:stateListAnimator="@null"
-            app:layout_constraintTop_toBottomOf="@+id/buttonCoordinates1_2"
-            app:layout_constraintStart_toEndOf="@+id/buttonCoordinates2_1"
-            app:layout_constraintEnd_toStartOf="@+id/buttonCoordinates2_3"
-            app:layout_constraintBottom_toTopOf="@+id/buttonCoordinates3_2"/>
-
-        <Button
-            style="@style/TileButton"
-            android:id="@+id/buttonCoordinates2_3"
-            android:layout_width="75dp"
-            android:layout_height="75dp"
-            android:layout_marginTop="8dp"
-            android:textSize="28sp"
-            android:textStyle="bold"
-            android:textColor="@android:color/white"
-            android:elevation="4dp"
-            android:stateListAnimator="@null"
-            app:layout_constraintTop_toBottomOf="@+id/buttonCoordinates1_3"
-            app:layout_constraintStart_toEndOf="@+id/buttonCoordinates2_2"
-            app:layout_constraintEnd_toStartOf="@+id/buttonCoordinates2_4"
-            app:layout_constraintBottom_toTopOf="@+id/buttonCoordinates3_3"/>
-
-        <Button
-            style="@style/TileButton"
-            android:id="@+id/buttonCoordinates2_4"
-            android:layout_width="75dp"
-            android:layout_height="75dp"
-            android:layout_marginTop="8dp"
-            android:textSize="28sp"
-            android:textStyle="bold"
-            android:textColor="@android:color/white"
-            android:elevation="4dp"
-            android:stateListAnimator="@null"
-            app:layout_constraintTop_toBottomOf="@+id/buttonCoordinates1_4"
-            app:layout_constraintStart_toEndOf="@+id/buttonCoordinates2_3"
-            app:layout_constraintBottom_toTopOf="@+id/buttonCoordinates3_4"/>
+        <Button style="@style/TileButton" android:id="@+id/buttonCoordinates2_1" android:layout_width="75dp" android:layout_height="75dp"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintTop_toBottomOf="@+id/buttonCoordinates1_1" app:layout_constraintBottom_toTopOf="@+id/buttonCoordinates3_1"
+            app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toStartOf="@+id/buttonCoordinates2_2"
+            android:layout_marginTop="8dp"/>
+        <Button style="@style/TileButton" android:id="@+id/buttonCoordinates2_2" android:layout_width="75dp" android:layout_height="75dp"
+            app:layout_constraintTop_toTopOf="@+id/buttonCoordinates2_1" app:layout_constraintBottom_toBottomOf="@+id/buttonCoordinates2_1"
+            app:layout_constraintStart_toEndOf="@+id/buttonCoordinates2_1" app:layout_constraintEnd_toStartOf="@+id/buttonCoordinates2_3"/>
+        <Button style="@style/TileButton" android:id="@+id/buttonCoordinates2_3" android:layout_width="75dp" android:layout_height="75dp"
+            app:layout_constraintTop_toTopOf="@+id/buttonCoordinates2_1" app:layout_constraintBottom_toBottomOf="@+id/buttonCoordinates2_1"
+            app:layout_constraintStart_toEndOf="@+id/buttonCoordinates2_2" app:layout_constraintEnd_toStartOf="@+id/buttonCoordinates2_4"/>
+        <Button style="@style/TileButton" android:id="@+id/buttonCoordinates2_4" android:layout_width="75dp" android:layout_height="75dp"
+            app:layout_constraintTop_toTopOf="@+id/buttonCoordinates2_1" app:layout_constraintBottom_toBottomOf="@+id/buttonCoordinates2_1"
+            app:layout_constraintStart_toEndOf="@+id/buttonCoordinates2_3" app:layout_constraintEnd_toEndOf="parent"/>
 
         <!-- Row 3 -->
-        <Button
-            style="@style/TileButton"
-            android:id="@+id/buttonCoordinates3_1"
-            android:layout_width="75dp"
-            android:layout_height="75dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginStart="75dp"
-            android:textSize="28sp"
-            android:textStyle="bold"
-            android:textColor="@android:color/white"
-            android:elevation="4dp"
-            android:stateListAnimator="@null"
-            app:layout_constraintTop_toBottomOf="@+id/buttonCoordinates2_1"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/buttonCoordinates3_2"
-            app:layout_constraintBottom_toTopOf="@+id/buttonCoordinates4_1"/>
-
-        <Button
-            style="@style/TileButton"
-            android:id="@+id/buttonCoordinates3_2"
-            android:layout_width="75dp"
-            android:layout_height="75dp"
-            android:layout_marginTop="8dp"
-            android:textSize="28sp"
-            android:textStyle="bold"
-            android:textColor="@android:color/white"
-            android:elevation="4dp"
-            android:stateListAnimator="@null"
-            app:layout_constraintTop_toBottomOf="@+id/buttonCoordinates2_2"
-            app:layout_constraintStart_toEndOf="@+id/buttonCoordinates3_1"
-            app:layout_constraintEnd_toStartOf="@+id/buttonCoordinates3_3"
-            app:layout_constraintBottom_toTopOf="@+id/buttonCoordinates4_2"/>
-
-        <Button
-            style="@style/TileButton"
-            android:id="@+id/buttonCoordinates3_3"
-            android:layout_width="75dp"
-            android:layout_height="75dp"
-            android:layout_marginTop="8dp"
-            android:textSize="28sp"
-            android:textStyle="bold"
-            android:textColor="@android:color/white"
-            android:elevation="4dp"
-            android:stateListAnimator="@null"
-            app:layout_constraintTop_toBottomOf="@+id/buttonCoordinates2_3"
-            app:layout_constraintStart_toEndOf="@+id/buttonCoordinates3_2"
-            app:layout_constraintEnd_toStartOf="@+id/buttonCoordinates3_4"
-            app:layout_constraintBottom_toTopOf="@+id/buttonCoordinates4_3"/>
-
-        <Button
-            style="@style/TileButton"
-            android:id="@+id/buttonCoordinates3_4"
-            android:layout_width="75dp"
-            android:layout_height="75dp"
-            android:layout_marginTop="8dp"
-            android:textSize="28sp"
-            android:textStyle="bold"
-            android:textColor="@android:color/white"
-            android:elevation="4dp"
-            android:stateListAnimator="@null"
-            app:layout_constraintTop_toBottomOf="@+id/buttonCoordinates2_4"
-            app:layout_constraintStart_toEndOf="@+id/buttonCoordinates3_3"
-            app:layout_constraintBottom_toTopOf="@+id/buttonCoordinates4_4"/>
+        <Button style="@style/TileButton" android:id="@+id/buttonCoordinates3_1" android:layout_width="75dp" android:layout_height="75dp"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintTop_toBottomOf="@+id/buttonCoordinates2_1" app:layout_constraintBottom_toTopOf="@+id/buttonCoordinates4_1"
+            app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toStartOf="@+id/buttonCoordinates3_2"
+            android:layout_marginTop="8dp"/>
+        <Button style="@style/TileButton" android:id="@+id/buttonCoordinates3_2" android:layout_width="75dp" android:layout_height="75dp"
+            app:layout_constraintTop_toTopOf="@+id/buttonCoordinates3_1" app:layout_constraintBottom_toBottomOf="@+id/buttonCoordinates3_1"
+            app:layout_constraintStart_toEndOf="@+id/buttonCoordinates3_1" app:layout_constraintEnd_toStartOf="@+id/buttonCoordinates3_3"/>
+        <Button style="@style/TileButton" android:id="@+id/buttonCoordinates3_3" android:layout_width="75dp" android:layout_height="75dp"
+            app:layout_constraintTop_toTopOf="@+id/buttonCoordinates3_1" app:layout_constraintBottom_toBottomOf="@+id/buttonCoordinates3_1"
+            app:layout_constraintStart_toEndOf="@+id/buttonCoordinates3_2" app:layout_constraintEnd_toStartOf="@+id/buttonCoordinates3_4"/>
+        <Button style="@style/TileButton" android:id="@+id/buttonCoordinates3_4" android:layout_width="75dp" android:layout_height="75dp"
+            app:layout_constraintTop_toTopOf="@+id/buttonCoordinates3_1" app:layout_constraintBottom_toBottomOf="@+id/buttonCoordinates3_1"
+            app:layout_constraintStart_toEndOf="@+id/buttonCoordinates3_3" app:layout_constraintEnd_toEndOf="parent"/>
 
         <!-- Row 4 -->
-        <Button
-            style="@style/TileButton"
-            android:id="@+id/buttonCoordinates4_1"
-            android:layout_width="75dp"
-            android:layout_height="75dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginStart="75dp"
-            android:textSize="28sp"
-            android:textStyle="bold"
-            android:textColor="@android:color/white"
-            android:elevation="4dp"
-            android:stateListAnimator="@null"
-            app:layout_constraintTop_toBottomOf="@+id/buttonCoordinates3_1"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/buttonCoordinates4_2"
-            app:layout_constraintBottom_toTopOf="@+id/actionButtons"/>
+        <Button style="@style/TileButton" android:id="@+id/buttonCoordinates4_1" android:layout_width="75dp" android:layout_height="75dp"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintTop_toBottomOf="@+id/buttonCoordinates3_1" app:layout_constraintBottom_toTopOf="@+id/actionButtons"
+            app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toStartOf="@+id/buttonCoordinates4_2"
+            android:layout_marginTop="8dp"/>
+        <Button style="@style/TileButton" android:id="@+id/buttonCoordinates4_2" android:layout_width="75dp" android:layout_height="75dp"
+            app:layout_constraintTop_toTopOf="@+id/buttonCoordinates4_1" app:layout_constraintBottom_toBottomOf="@+id/buttonCoordinates4_1"
+            app:layout_constraintStart_toEndOf="@+id/buttonCoordinates4_1" app:layout_constraintEnd_toStartOf="@+id/buttonCoordinates4_3"/>
+        <Button style="@style/TileButton" android:id="@+id/buttonCoordinates4_3" android:layout_width="75dp" android:layout_height="75dp"
+            app:layout_constraintTop_toTopOf="@+id/buttonCoordinates4_1" app:layout_constraintBottom_toBottomOf="@+id/buttonCoordinates4_1"
+            app:layout_constraintStart_toEndOf="@+id/buttonCoordinates4_2" app:layout_constraintEnd_toStartOf="@+id/buttonCoordinates4_4"/>
+        <Button style="@style/TileButton" android:id="@+id/buttonCoordinates4_4" android:layout_width="75dp" android:layout_height="75dp"
+            app:layout_constraintTop_toTopOf="@+id/buttonCoordinates4_1" app:layout_constraintBottom_toBottomOf="@+id/buttonCoordinates4_1"
+            app:layout_constraintStart_toEndOf="@+id/buttonCoordinates4_3" app:layout_constraintEnd_toEndOf="parent"/>
 
-        <Button
-            style="@style/TileButton"
-            android:id="@+id/buttonCoordinates4_2"
-            android:layout_width="75dp"
-            android:layout_height="75dp"
-            android:layout_marginTop="8dp"
-            android:textSize="28sp"
-            android:textStyle="bold"
-            android:textColor="@android:color/white"
-            android:elevation="4dp"
-            android:stateListAnimator="@null"
-            app:layout_constraintTop_toBottomOf="@+id/buttonCoordinates3_2"
-            app:layout_constraintStart_toEndOf="@+id/buttonCoordinates4_1"
-            app:layout_constraintEnd_toStartOf="@+id/buttonCoordinates4_3"/>
-
-        <Button
-            style="@style/TileButton"
-            android:id="@+id/buttonCoordinates4_3"
-            android:layout_width="75dp"
-            android:layout_height="75dp"
-            android:layout_marginTop="8dp"
-            android:textSize="28sp"
-            android:textStyle="bold"
-            android:textColor="@android:color/white"
-            android:elevation="4dp"
-            android:stateListAnimator="@null"
-            app:layout_constraintTop_toBottomOf="@+id/buttonCoordinates3_3"
-            app:layout_constraintStart_toEndOf="@+id/buttonCoordinates4_2"
-            app:layout_constraintEnd_toStartOf="@+id/buttonCoordinates4_4"/>
-
-        <Button
-            style="@style/TileButton"
-            android:id="@+id/buttonCoordinates4_4"
-            android:layout_width="75dp"
-            android:layout_height="75dp"
-            android:layout_marginTop="8dp"
-            android:textSize="28sp"
-            android:textStyle="bold"
-            android:textColor="@android:color/white"
-            android:elevation="4dp"
-            android:stateListAnimator="@null"
-            app:layout_constraintTop_toBottomOf="@+id/buttonCoordinates3_4"
-            app:layout_constraintStart_toEndOf="@+id/buttonCoordinates4_3"/>
-
-        <!-- ── Action Buttons: Play Again | Undo | Menu ── -->
+        <!-- Action Row 1 -->
         <LinearLayout
             android:id="@+id/actionButtons"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center"
-            android:layout_marginTop="24dp"
-            android:layout_marginBottom="24dp"
+            android:layout_marginTop="32dp"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
             app:layout_constraintTop_toBottomOf="@+id/buttonCoordinates4_1"
+            app:layout_constraintBottom_toTopOf="@+id/hintSolutionButtons"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
-
-            <Button
-                android:id="@+id/btnPlayAgain"
-                android:layout_width="100dp"
-                android:layout_height="48dp"
-                android:layout_marginEnd="8dp"
-                android:text="@string/play_again"
-                android:textColor="@android:color/white"
-                android:textSize="12sp"
-                android:textStyle="bold"
-                android:stateListAnimator="@null"
-                android:elevation="3dp"
-                android:onClick="playAgain"/>
-
-            <Button
-                android:id="@+id/btnUndo"
-                android:layout_width="100dp"
-                android:layout_height="48dp"
-                android:layout_marginEnd="8dp"
-                android:enabled="false"
-                android:text="@string/undo"
-                android:textColor="@color/colorBtnUndoText"
-                android:textSize="12sp"
-                android:textStyle="bold"
-                android:stateListAnimator="@null"
-                android:elevation="3dp"
-                android:onClick="undo"/>
-
-            <Button
-                android:id="@+id/btnMenu"
-                android:layout_width="100dp"
-                android:layout_height="48dp"
-                android:text="@string/menu"
-                android:textColor="@android:color/white"
-                android:textSize="12sp"
-                android:textStyle="bold"
-                android:stateListAnimator="@null"
-                android:elevation="3dp"
-                android:onClick="backToMainActivity"/>
-
+            <Button android:id="@+id/btnPlayAgain"
+                android:layout_width="0dp" android:layout_height="54dp"
+                android:layout_weight="1" android:layout_marginEnd="8dp"
+                android:text="@string/play_again" android:textSize="12sp"
+                android:textStyle="bold" android:textAllCaps="false" android:onClick="playAgain"/>
+            <Button android:id="@+id/btnUndo" android:layout_width="0dp" android:layout_height="54dp" android:layout_weight="1" android:layout_marginEnd="8dp" android:text="@string/undo" android:textSize="12sp" android:textStyle="bold" android:textAllCaps="false" android:onClick="undo"/>
+            <Button android:id="@+id/btnMenu" android:layout_width="0dp" android:layout_height="54dp" android:layout_weight="1" android:text="@string/menu" android:textSize="12sp" android:textStyle="bold" android:textAllCaps="false" android:onClick="backToMainActivity"/>
         </LinearLayout>
-        <!-- ── Action Buttons Row 2: Help | Hint | Solution | Stickers ── -->
+
+        <!-- Action Row 2 -->
         <LinearLayout
             android:id="@+id/hintSolutionButtons"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="24dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="32dp"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
             app:layout_constraintTop_toBottomOf="@+id/actionButtons"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent">
-
-            <Button
-                android:id="@+id/btnHelp"
-                android:layout_width="85dp"
-                android:layout_height="48dp"
-                android:layout_marginEnd="8dp"
-                android:text="@string/how_to_play"
-                android:textColor="@android:color/white"
-                android:textSize="9sp"
-                android:textStyle="bold"
-                android:stateListAnimator="@null"
-                android:elevation="3dp"
-                android:onClick="showHowToPlay"/>
-
-            <Button
-                android:id="@+id/btnHint"
-                android:layout_width="85dp"
-                android:layout_height="48dp"
-                android:layout_marginEnd="8dp"
-                android:text="@string/hint"
-                android:textColor="@android:color/white"
-                android:textSize="9sp"
-                android:textStyle="bold"
-                android:stateListAnimator="@null"
-                android:elevation="3dp"
+            <Button android:id="@+id/btnHelp"
+                android:layout_width="0dp"
+                android:layout_height="54dp" android:layout_weight="1.2"
+                android:layout_marginEnd="6dp" android:text="@string/how_to_play"
+                android:textSize="10sp" android:textStyle="bold" android:textAllCaps="false"
+                android:padding="0dp" android:onClick="showHowToPlay"/>
+            <Button android:id="@+id/btnHint" android:layout_width="0dp"
+                android:layout_height="54dp" android:layout_weight="0.8"
+                android:layout_marginEnd="6dp" android:text="@string/hint"
+                android:textSize="11sp" android:textStyle="bold" android:textAllCaps="false"
                 android:onClick="showHint"/>
-
-            <Button
-                android:id="@+id/btnSolution"
-                android:layout_width="85dp"
-                android:layout_height="48dp"
-                android:layout_marginEnd="8dp"
-                android:text="@string/solution"
-                android:textColor="@android:color/white"
-                android:textSize="9sp"
-                android:textStyle="bold"
-                android:stateListAnimator="@null"
-                android:elevation="3dp"
-                android:onClick="showSolution"/>
-
-            <Button
-                android:id="@+id/btnStickers"
-                android:layout_width="85dp"
-                android:layout_height="48dp"
-                android:text="@string/sticker_book"
-                android:textColor="@android:color/white"
-                android:textSize="9sp"
-                android:textStyle="bold"
-                android:stateListAnimator="@null"
-                android:elevation="3dp"
-                android:onClick="showStickerBook"/>
+            <Button android:id="@+id/btnSolution" android:layout_width="0dp" android:layout_height="54dp" android:layout_weight="1" android:layout_marginEnd="6dp" android:text="@string/solution" android:textSize="11sp" android:textStyle="bold" android:textAllCaps="false" android:onClick="showSolution"/>
+            <Button android:id="@+id/btnStickers" android:layout_width="0dp" android:layout_height="54dp" android:layout_weight="1" android:text="@string/sticker_book" android:textSize="10sp" android:textStyle="bold" android:textAllCaps="false" android:padding="0dp" android:onClick="showStickerBook"/>
         </LinearLayout>
 
-        <!-- ── Hint Arrow Overlay ─────────────────────────
-     Transparent — draws arrow between hint tile and
-     empty slot. clickable=false so touches pass through -->
+        <!-- Hint Overlay -->
         <com.example.balloonwala.views.HintArrowView
             android:id="@+id/hintArrowView"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:clickable="false"
-            android:focusable="false"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
-</androidx.constraintlayout.widget.ConstraintLayout>
+            android:focusable="false"/>
 
-    <!-- ── Celebration Overlay ─────────────────────────── -->
-    <!-- Sits on top of everything including toolbar       -->
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- Celebration Layer -->
     <FrameLayout
         android:id="@+id/celebrationOverlay"
         android:layout_width="match_parent"
@@ -500,92 +181,16 @@
         android:background="@color/colorOverlay"
         android:clickable="true"
         android:focusable="true">
-
-        <!-- Balloon shower container -->
-        <FrameLayout
-            android:id="@+id/balloonContainer"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
-
-        <!-- Win message -->
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:orientation="vertical"
-            android:gravity="center"
-            android:padding="32dp">
-
-            <TextView
-                android:id="@+id/celebrationEmoji"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="🎈"
-                android:textSize="72sp"
-                android:layout_marginBottom="8dp"/>
-
-            <TextView
-                android:id="@+id/celebrationTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/puzzle_solved"
-                android:textSize="40sp"
-                android:textStyle="bold"
-                android:textColor="?attr/colorPrimary"
-                android:layout_marginBottom="8dp"/>
-
-            <TextView
-                android:id="@+id/celebrationStats"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="18sp"
-                android:textColor="@color/colorTextSecondary"
-                android:gravity="center"
-                android:layout_marginBottom="4dp"/>
-
-            <TextView
-                android:id="@+id/celebrationBest"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:textColor="@color/colorBestScore"
-                android:gravity="center"
-                android:visibility="gone"
-                android:layout_marginBottom="24dp"/>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginBottom="24dp">
-
-                <Button
-                    android:id="@+id/celebrationPlayAgain"
-                    android:layout_width="160dp"
-                    android:layout_height="56dp"
-                    android:layout_marginEnd="8dp"
-                    android:text="@string/play_again_awesome"
-                    android:textColor="@android:color/white"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    android:stateListAnimator="@null"
-                    android:elevation="4dp"/>
-
-                <Button
-                    android:id="@+id/celebrationDismiss"
-                    android:layout_width="160dp"
-                    android:layout_height="56dp"
-                    android:text="@string/view_board"
-                    android:textColor="@android:color/white"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    android:backgroundTint="@color/colorBtnUndoText"
-                    android:stateListAnimator="@null"
-                    android:elevation="4dp"/>
+        <FrameLayout android:id="@+id/balloonContainer" android:layout_width="match_parent" android:layout_height="match_parent"/>
+        <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_gravity="center" android:orientation="vertical" android:gravity="center" android:padding="32dp">
+            <TextView android:id="@+id/celebrationEmoji" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="🎈" android:textSize="72sp"/>
+            <TextView android:id="@+id/celebrationTitle" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/puzzle_solved" android:textSize="40sp" android:textStyle="bold" android:textColor="?attr/colorPrimary"/>
+            <TextView android:id="@+id/celebrationStats" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textSize="18sp" android:textColor="@color/colorTextSecondary" android:gravity="center"/>
+            <TextView android:id="@+id/celebrationBest" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textSize="16sp" android:textStyle="bold" android:textColor="@color/colorBestScore" android:visibility="gone"/>
+            <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_marginTop="24dp">
+                <Button android:id="@+id/celebrationPlayAgain" android:layout_width="160dp" android:layout_height="56dp" android:layout_marginEnd="8dp" android:text="@string/play_again_awesome" android:textStyle="bold" android:textAllCaps="false"/>
+                <Button android:id="@+id/celebrationDismiss" android:layout_width="160dp" android:layout_height="56dp" android:text="@string/view_board" android:textStyle="bold" android:textAllCaps="false"/>
             </LinearLayout>
-
         </LinearLayout>
     </FrameLayout>
-
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -25,11 +25,12 @@ public class ButtonStyleHelper {
     private static final int COLOR_QUIT_TEXT = Color.parseColor("#636E72"); // Green
 
     private static final int COLOR_PLAY_AGAIN = Color.parseColor("#1DD1A1"); // Green
-    private static final int COLOR_UNDO        = Color.parseColor("#DFE6E9"); // Grey
-    private static final int COLOR_UNDO_TEXT   = Color.parseColor("#636E72"); // Grey text
-    private static final int COLOR_MENU        = Color.parseColor("#54A0FF"); // Blue
-    private static final int COLOR_HINT        = Color.parseColor("#FDCB6E"); // Amber
-    private static final int COLOR_SOLUTION    = Color.parseColor("#6C5CE7"); // Indigo
+    private static final int COLOR_UNDO        = Color.parseColor("#DFE6E9"); // Soft Gray
+    private static final int COLOR_UNDO_TEXT   = Color.parseColor("#636E72"); // Soft Gray text
+    private static final int COLOR_MENU        = Color.parseColor("#54A0FF"); // Electric Blue
+    private static final int COLOR_HINT        = Color.parseColor("#FFD15C"); // Electric Yellow
+    private static final int COLOR_SOLUTION    = Color.parseColor("#6C5CE7"); // Royal Purple
+    private static final int COLOR_STICKER_BOOK = Color.parseColor("#FD79A8"); // Bright Magenta
     private static final int COLOR_PRIMARY     = Color.parseColor("#FF6B6B"); // Red
 
     private static final int CORNER_RADIUS_DP  = 14;
@@ -45,7 +46,7 @@ public class ButtonStyleHelper {
     }
 
     public static void styleStickerBook(Button button) {
-        applyStyle(button, COLOR_SOLUTION, Color.WHITE);
+        applyStyle(button, COLOR_STICKER_BOOK, Color.WHITE);
     }
 
     public static void styleQuit(Button button) {

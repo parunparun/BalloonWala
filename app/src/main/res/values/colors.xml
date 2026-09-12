@@ -24,10 +24,11 @@
     <color name="colorBtnUndoText">#636E72</color>
     <color name="colorBtnMenu">#54A0FF</color>
 
-    <!-- ── Hint + Solution Buttons ───────────────────────
-         Hint — warm amber; Solution — indigo              -->
+    <!-- ── Hint + Solution + Sticker Buttons ────────────────
+         Hint — warm amber; Solution — indigo; Sticker - purple -->
     <color name="colorBtnHint">#FDCB6E</color>
     <color name="colorBtnSolution">#6C5CE7</color>
+    <color name="colorBtnSticker">#A29BFE</color>
 
     <!-- ── Celebration Overlay ───────────────────────────
          Semi-transparent white overlay background         -->

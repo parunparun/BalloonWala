@@ -114,6 +114,18 @@ public class GameState {
         return false;
     }
 
+    /**
+     * Returns the stored best move count, or -1 if none exists yet.
+     */
+    public int getBestMoves(int columns) {
+        return prefs.getInt(getKey(columns), NO_BEST_MOVES);
+    }
+
+    /** Clears the saved best move count for a given puzzle mode. */
+    public void clearBestMoves(int columns) {
+        prefs.edit().remove(getKey(columns)).apply();
+    }
+
     private String getKey(int columns) {
         return columns == AppConstants.EIGHT_PUZZLE
                 ? KEY_BEST_MOVES_8
